@@ -68,7 +68,7 @@ namespace WololoGame
     }
     class PhysicalEngine : GameComponent
     {
-        public double Gravity { get; set; } = 2 / 9.0; // 2 / t^2
+        public double Gravity { get; set; } = -2 / 9.0; // 2 / t^2
         HashSet<PhysicsObject> objects = new HashSet<PhysicsObject>();
         public PhysicalEngine(Game game) : base(game)
         {

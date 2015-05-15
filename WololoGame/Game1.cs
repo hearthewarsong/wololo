@@ -60,7 +60,6 @@ namespace WololoGame
             Components.Add(player);
         }
 
-
         /// <summary>
         /// Allows the game to perform any initialization it needs to before starting to run.
         /// This is where it can query for any required services and load any non-graphic
@@ -74,7 +73,7 @@ namespace WololoGame
             lastKeyboardState = new KeyboardState();
             MapLoader maploader = new MapLoader();
 
-            maploader.LoadMap(this, "maps/level1.txt");
+            maploader.LoadMap(this, "Content/maps/beginning.txt");
             InitSpriteSheets();
 
             base.Initialize();

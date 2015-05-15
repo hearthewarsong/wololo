@@ -26,13 +26,15 @@ namespace WololoGame.Graphics
 
         public override void Draw(GameTime gameTime)
         {
-            switch(moveState)
+            switch (moveState)
             {
                 case State.Standing:
+
                     break;
                 case State.Running:
                     break;
                 case State.Jumping:
+
                     break;
                 case State.TakingDamage:
                     break;

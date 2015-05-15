@@ -34,7 +34,7 @@ namespace WololoGame.Graphics
 
             var screenWidth = GraphicsDevice.PresentationParameters.BackBufferWidth;
             var screenHeight = GraphicsDevice.PresentationParameters.BackBufferHeight;
-            var aspectRatio = (float)screenWidth / screenHeight;
+           // var aspectRatio = (float)screenWidth / screenHeight;
 
 //            spriteBatch.Begin();
 
@@ -48,7 +48,7 @@ namespace WololoGame.Graphics
             spriteBatch.Draw(GlobalConfig.NightMode ? tex_dark_leftCorner : tex_sunny_leftCorner,
                 new Rectangle((int)(Position.X * screenWidth),
                     (int)(Position.Y * screenHeight),
-                    (int)(screenWidth / (24 * aspectRatio)),
+                    (int)(screenWidth / (24)),
                     screenHeight / 24),
                 Color.White);
 
@@ -58,7 +58,7 @@ namespace WololoGame.Graphics
                 spriteBatch.Draw(GlobalConfig.NightMode ? tex_dark_middle : tex_sunny_middle,
                     new Rectangle((int)((Position.X + i) * screenWidth),
                         (int)(Position.Y * screenHeight),
-                        (int)(screenWidth / (48 * aspectRatio)),
+                        (int)(screenWidth / (48)),
                         screenHeight / 24),
                     Color.White);
             }
@@ -66,7 +66,7 @@ namespace WololoGame.Graphics
             spriteBatch.Draw(GlobalConfig.NightMode ? tex_dark_rightCorner : tex_sunny_rightCorner,
                 new Rectangle((int)((Position.X + i) * screenWidth),
                     (int)(Position.Y * screenHeight),
-                    (int)(screenWidth / (24 * aspectRatio)),
+                    (int)(screenWidth / (24)),
                     screenHeight / 24),
                 Color.White);
 
