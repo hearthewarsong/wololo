@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 
 namespace WololoGame
 {
@@ -10,8 +11,13 @@ namespace WololoGame
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
+        KeyboardState lastKeyboardState;
 
         Texture2D background;
+        Model stickFigure;
+
+        Matrix World;
+        Camera FPSCamera;
 
         public Game1()
         {
@@ -27,8 +33,17 @@ namespace WololoGame
         /// </summary>
         protected override void Initialize()
         {
-            // TODO: Add your initialization logic here
+            FPSCamera = new Camera {
+                FOV = 60.0f,
+                AspectRatio = (float)GraphicsDevice.PresentationParameters.BackBufferWidth / (float)GraphicsDevice.PresentationParameters.BackBufferHeight,
+                NearPlane = 0.1f,
+                FarPlane = 100.0f,
+                Position = new Vector3(0.0f, 1.5f, -1.0f),
+                Target = new Vector3(),
+                Up = Vector3.UnitY };
 
+            World = Matrix.CreateWorld(new Vector3(), Vector3.UnitZ, Vector3.UnitY);
+            lastKeyboardState = new KeyboardState();
             base.Initialize();
         }
 
@@ -42,6 +57,7 @@ namespace WololoGame
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
             background = Content.Load<Texture2D>("images/backgroujnd1");
+            stickFigure = Content.Load<Model>("models/figura");
         }
 
         /// <summary>
@@ -60,8 +76,20 @@ namespace WololoGame
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-            // TODO: Add your update logic here
+            var currentState = Keyboard.GetState();
+            if (currentState.IsKeyDown(Keys.W) && lastKeyboardState.IsKeyUp(Keys.W))
+                FPSCamera.Position.Z += 0.02f;
 
+            if (currentState.IsKeyDown(Keys.S) && lastKeyboardState.IsKeyUp(Keys.S))
+                FPSCamera.Position.Z -= 0.02f;
+
+            if (currentState.IsKeyDown(Keys.A) && lastKeyboardState.IsKeyUp(Keys.A))
+                FPSCamera.Position.X += 0.02f;
+
+            if (currentState.IsKeyDown(Keys.D) && lastKeyboardState.IsKeyUp(Keys.D))
+                FPSCamera.Position.X -= 0.02f;
+
+            lastKeyboardState = currentState;
             base.Update(gameTime);
         }
 
@@ -78,6 +106,17 @@ namespace WololoGame
                 new Rectangle(0, 0, GraphicsDevice.PresentationParameters.BackBufferWidth, GraphicsDevice.PresentationParameters.BackBufferHeight),
                 Color.AliceBlue);
             spriteBatch.End();
+
+            foreach (var mesh in stickFigure.Meshes)
+            {
+                foreach (BasicEffect e in mesh.Effects)
+                {
+                    e.World = World;
+                    e.View = FPSCamera.View;
+//                    e.Projection = FPSCamera.Projection;
+                }
+                mesh.Draw();
+            }
 
             base.Draw(gameTime);
         }
