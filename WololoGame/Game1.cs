@@ -30,7 +30,7 @@ namespace WololoGame
             Content.RootDirectory = "Content";
         }
 
-        void createGrassyTerrain(Vector4 rec, Visibility v)
+        public void createGrassyTerrain(Vector4 rec, Visibility v)
         {
             IPhysicsObject physicsObj = physics.AbbObject(
                 rec.X,
@@ -45,7 +45,7 @@ namespace WololoGame
             GrassyPlatform platform = new GrassyPlatform(this, (float)physicsObj.Width, (float)physicsObj.Height, new Vector2((float)physicsObj.X, (float)physicsObj.Y));
             Components.Add(platform);
         }
-        void createPlayer(Vector4 rec)
+        public void createPlayer(Vector4 rec)
         {
 
         }
@@ -74,8 +74,7 @@ namespace WololoGame
             lastKeyboardState = new KeyboardState();
             MapLoader maploader = new MapLoader();
 
-            maploader.LoadMap(this, "maps/level1.txt");
-            
+            maploader.LoadMap(this, "Content/maps/begining.txt");
             Components.Add(new GrassyPlatform(this, 0.11f, 0.2f, new Vector2(0.05f, 0.75f), Visibility.NightModeOnly));
             Components.Add(new GrassyPlatform(this, 0.4f, 0.18f, new Vector2(0.666f, 0.75f)));
 

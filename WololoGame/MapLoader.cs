@@ -13,7 +13,7 @@ namespace WololoGame
     {
         public void LoadMap(Game1 game, string mapfile)
         {
-            using (StreamReader levelFileStream = new StreamReader(TitleContainer.OpenStream("Content/maps/begining.txt")))
+            using (StreamReader levelFileStream = new StreamReader(TitleContainer.OpenStream(mapfile)))
             {
                 string line;
                 while ((line = levelFileStream.ReadLine())!= null)
@@ -24,12 +24,21 @@ namespace WololoGame
                     {
                         if (fields[0].ToLower() == "player")
                         {
+                            game.createPlayer(new Vector4(int.Parse(fields[1]) / 24.0f, int.Parse(fields[2]) / 24.0f
+                                , int.Parse(fields[3]) / 24.0f, int.Parse(fields[4]) / 24.0f));
 
-                           
                         }
-                        else if (fields[0].ToLower() == "player")
+                        else if (fields[0].ToLower() == "terrain")
                         {
+                            int vis = fields.Length >= 6 ? int.Parse(fields[5]) : 0;
+                            Visibility v = Visibility.Both;
+                            if (vis == 1)
+                                v = Visibility.SunnyModeOnly;
+                            else if (vis == 2)
+                                v = Visibility.NightModeOnly;
 
+                            game.createGrassyTerrain(new Vector4(int.Parse(fields[1]) / 24.0f, int.Parse(fields[2]) / 24.0f
+                                , int.Parse(fields[3]) / 24.0f, int.Parse(fields[4]) / 24.0f),v);
                         }
                     }
                 }
