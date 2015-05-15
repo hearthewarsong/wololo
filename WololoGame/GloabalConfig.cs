@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace WololoGame
 {
-    static class GloabalConfig
+    static class GlobalConfig
     {
         public static bool NightMode { get; set; }
 
