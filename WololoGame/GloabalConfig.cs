@@ -9,6 +9,7 @@ namespace WololoGame
     static class GlobalConfig
     {
         public static bool NightMode { get; set; }
-
+        public static float ViewBottomX { get; set; }
+        public static float ViewLeftY { get; set; }
     }
 }
