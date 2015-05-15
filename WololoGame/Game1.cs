@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System.Collections.Generic;
 
 namespace WololoGame
 {
@@ -28,7 +29,7 @@ namespace WololoGame
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
-
+            Logger.Get().SetLogLevel("main", LogLevel.warning);
             base.Initialize();
         }
 
@@ -40,8 +41,8 @@ namespace WololoGame
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
-
             background = Content.Load<Texture2D>("images/backgroujnd1");
+            Logger.Get().Log("main", LogLevel.warning, "LoadingContentFinished!"); 
         }
 
         /// <summary>
