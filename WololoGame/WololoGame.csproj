@@ -124,6 +124,7 @@
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="Camera.cs" />
+    <Compile Include="GameLogic.cs" />
     <Compile Include="GamePage.xaml.cs">
       <DependentUpon>GamePage.xaml</DependentUpon>
     </Compile>
@@ -133,6 +134,7 @@
     <Compile Include="Graphics\GrassyPlatform.cs" />
     <Compile Include="Graphics\Player.cs" />
     <Compile Include="Logger.cs" />
+    <Compile Include="MapLoader.cs" />
     <Compile Include="PhysicalEngine.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
