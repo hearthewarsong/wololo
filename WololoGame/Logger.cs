@@ -45,7 +45,7 @@ namespace WololoGame
         }
         public bool Log(string area, LogLevel level, string message)
         {
-            if(level == LogLevel.error || logLevels.ContainsKey(area) && logLevels[area] >= level)
+            if(ShouldLog(area,level))
             {
                 System.Diagnostics.Debug.WriteLine(message);
                 return true;
