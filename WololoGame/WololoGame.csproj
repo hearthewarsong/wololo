@@ -131,6 +131,7 @@
     <Compile Include="GloabalConfig.cs" />
     <Compile Include="GraphicInterfaces.cs" />
     <Compile Include="Logger.cs" />
+    <Compile Include="PhysicalEngine.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
