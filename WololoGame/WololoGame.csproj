@@ -124,6 +124,7 @@
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="Camera.cs" />
+    <Compile Include="GameLogic.cs" />
     <Compile Include="GamePage.xaml.cs">
       <DependentUpon>GamePage.xaml</DependentUpon>
     </Compile>
@@ -134,6 +135,7 @@
     <Compile Include="Graphics\Player.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="Logic\LogicObjectBase.cs" />
+    <Compile Include="MapLoader.cs" />
     <Compile Include="Logic\PlayerLogic.cs" />
     <Compile Include="PhysicalEngine.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

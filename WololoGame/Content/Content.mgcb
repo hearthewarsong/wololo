@@ -134,3 +134,6 @@
 /processorParam:TextureFormat=Color
 /build:images/grass_sunny_soil.png
 
+#begin maps/begining.txt
+/copy:maps/begining.txt
+

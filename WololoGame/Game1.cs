@@ -62,6 +62,9 @@ namespace WololoGame
 
             lastKeyboardState = new KeyboardState();
             MapLoader maploader = new MapLoader();
+
+            maploader.LoadMap(this, "maps/level1.txt");
+
             IPhysicsObject physicsObj = physics.AbbObject(
                 0.5f,
                 0.5f,
