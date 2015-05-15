@@ -21,12 +21,10 @@ namespace WololoGame
         public int takingDamageFrameCount;
 
         public float runFrameTimespan;
-        public float jumpFrameTimespan;
-        public float takingDamageFrameTimespan;
 
         public List<int> runFrameIndices;
-        public List<int> jumpFrameIndices;
-        public List<int> takingDamageFrameIndices;
+        public int jumpFrameIndex;
+        public int takingDamageFrameIndex;
     }
 
 
