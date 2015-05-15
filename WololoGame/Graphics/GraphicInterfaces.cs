@@ -14,6 +14,22 @@ namespace WololoGame
         Both
     }
 
+    public struct SpriteSheetDescription
+    {
+        public int runFrameCount;
+        public int jumpFrameCount;
+        public int takingDamageFrameCount;
+
+        public float runFrameTimespan;
+        public float jumpFrameTimespan;
+        public float takingDamageFrameTimespan;
+
+        public List<int> runFrameIndices;
+        public List<int> jumpFrameIndices;
+        public List<int> takingDamageFrameIndices;
+    }
+
+
     public class GraphicsObject : DrawableGameComponent
     {
         public GraphicsObject(Game game, float width, float height, Vector2 pos = new Vector2()) :base(game)
@@ -22,9 +38,18 @@ namespace WololoGame
             Height = height;
             Position = pos;
         }
+        public GraphicsObject(Game game, IPhysicsObject po) : base(game)
+        {
+            Width = (float)po.Width;
+            Height = (float)po.Height;
+            Position = new Vector2( (float)po.X, (float)po.Y);
+        }
+
         public Vector2 Position { get; set; }
         public float Width { get; set; }
         public float Height { get; set; }
+        public IPhysicsObject physicsObject { get; set; }
+
     }
 
     public class AnimatedGraphics : GraphicsObject
@@ -36,21 +61,6 @@ namespace WololoGame
             Jumping,
             TakingDamage
         }
-        public struct SpriteSheetDescription
-        {
-            int runFrameCount;
-            int jumpFrameCount;
-            int takingDamageFrameCount;
-
-            float runFrameTimespan;
-            float jumpFrameTimespan;
-            float takingDamageFrameTimespan;
-
-            List<int> runFrameIndices;
-            List<int> jumpFrameIndices;
-            List<int> takingDamageFrameIndices;
-        }
-
 
         public AnimatedGraphics(Game game, float width, float height, Vector2 pos = new Vector2()) :
             base(game, width, height, pos)

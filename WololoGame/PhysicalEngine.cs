@@ -7,13 +7,12 @@ using Microsoft.Xna.Framework;
 
 namespace WololoGame
 {
-    interface ILogicObjectForPhysics
+    public interface ILogicObjectForPhysics
     {
         void CollidedWith(ILogicObjectForPhysics otherObject);
-        bool CanJump { get; set; }
     }
 
-    interface IPhysicsObject
+    public interface IPhysicsObject
     {
         double X { get; set; }
         double Y { get; set; }

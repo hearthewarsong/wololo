@@ -3,6 +3,8 @@ using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework.Input;
 using WololoGame.Graphics;
+using System;
+using WololoGame.Logic;
 
 namespace WololoGame
 {
@@ -14,15 +16,31 @@ namespace WololoGame
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
         KeyboardState lastKeyboardState;
+        PhysicalEngine physics;
 
         Texture2D backgroundDark;
         Texture2D backgroundSunny;
 
+        Player player;
+
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
+            physics = new PhysicalEngine(this);
             Content.RootDirectory = "Content";
         }
+
+        void createGrassyTerrain(Rectangle rec, Visibility v)
+        {
+
+        }
+        void createPlayer(Rectangle rec)
+        {
+
+        }
+
+
+
 
         /// <summary>
         /// Allows the game to perform any initialization it needs to before starting to run.
@@ -43,10 +61,29 @@ namespace WololoGame
             Logger.Get().SetLogLevel("main", LogLevel.warning);
 
             lastKeyboardState = new KeyboardState();
-            Components.Add(new GrassyPlatform(this, 0.3f, 0.1f, new Vector2(0.5f, 0.5f)));
+            MapLoader maploader = new MapLoader();
+            IPhysicsObject physicsObj = physics.AbbObject(
+                0.5f,
+                0.5f,
+                0.3f,
+                0.1f,
+                true,
+                true,
+                true,
+                new PlayerLogic()
+                );
+            GrassyPlatform platform = new GrassyPlatform(this, physicsObj.Width, physicsObj.Height, new Vector2(physicsObj.X, physicsObj.Y));
+            
+            Components.Add(platform);
             Components.Add(new GrassyPlatform(this, 0.11f, 0.2f, new Vector2(0.05f, 0.75f), Visibility.NightModeOnly));
             Components.Add(new GrassyPlatform(this, 0.4f, 0.18f, new Vector2(0.666f, 0.75f)));
-           // Components.Add(new Player(this, 96.0f / GraphicsDevice.PresentationParameters.BackBufferWidth, 128.0f / GraphicsDevice.PresentationParameters.BackBufferHeight, new Vector2(0.666f, 0.8f)));
+
+            SpriteSheetDescription desc = new SpriteSheetDescription();
+            desc.jumpFrameCount = 2;
+            desc.jumpFrameIndices = new List<int> { 0, 4};
+            desc.jumpFrameTimespan = 0.5f;
+            player = new Player(this, 96.0f / GraphicsDevice.PresentationParameters.BackBufferWidth, 128.0f / GraphicsDevice.PresentationParameters.BackBufferHeight, desc, new Vector2(0.666f, 0.8f));
+            Components.Add(player);
             base.Initialize();
         }
 
@@ -90,14 +127,27 @@ namespace WololoGame
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
+            HandleInput();
+
+            base.Update(gameTime);
+
+
+        }
+
+        private void HandleInput()
+        {
             var currentState = Keyboard.GetState();
 
-            if (currentState.IsKeyDown(Keys.Space) && lastKeyboardState.IsKeyUp(Keys.Space))
+            if (currentState.IsKeyDown(Keys.H) && lastKeyboardState.IsKeyUp(Keys.H))
                 GlobalConfig.NightMode = !GlobalConfig.NightMode;
 
+            if (currentState.IsKeyDown(Keys.Space) && lastKeyboardState.IsKeyUp(Keys.Space))
+            {
+            }
+
             lastKeyboardState = currentState;
-            base.Update(gameTime);
         }
+
 
         /// <summary>
         /// This is called when the game should draw itself.

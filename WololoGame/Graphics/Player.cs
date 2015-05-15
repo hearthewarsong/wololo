@@ -11,6 +11,7 @@ namespace WololoGame.Graphics
     public class Player : AnimatedGraphics
     {
         public static Texture2D playerTexture;
+        public static SpriteSheetDescription sheetDescription;
 
         public Player(Game game, float width, float height, SpriteSheetDescription d,  Vector2 pos = new Vector2()) :
             base(game, width, height, pos)
