@@ -9,5 +9,6 @@ namespace WololoGame
     static class GloabalConfig
     {
         public static bool NightMode { get; set; }
+
     }
 }
