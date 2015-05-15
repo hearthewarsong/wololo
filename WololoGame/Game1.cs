@@ -11,6 +11,8 @@ namespace WololoGame
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
 
+        Texture2D background;
+
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -39,7 +41,7 @@ namespace WololoGame
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            // TODO: use this.Content to load your game content here
+            background = Content.Load<Texture2D>("images/backgroujnd1");
         }
 
         /// <summary>
@@ -71,7 +73,11 @@ namespace WololoGame
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            // TODO: Add your drawing code here
+            spriteBatch.Begin();
+            spriteBatch.Draw(background,
+                new Rectangle(0, 0, GraphicsDevice.PresentationParameters.BackBufferWidth, GraphicsDevice.PresentationParameters.BackBufferHeight),
+                Color.AliceBlue);
+            spriteBatch.End();
 
             base.Draw(gameTime);
         }
