@@ -17,8 +17,6 @@ namespace WololoGame
         Texture2D backgroundDark;
         Texture2D backgroundSunny;
 
-        Camera FPSCamera;
-
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -33,16 +31,16 @@ namespace WololoGame
         /// </summary>
         protected override void Initialize()
         {
-            FPSCamera = new Camera {
-                FOV = 60.0f,
-                AspectRatio = (float)GraphicsDevice.PresentationParameters.BackBufferWidth / (float)GraphicsDevice.PresentationParameters.BackBufferHeight,
-                NearPlane = 0.1f,
-                FarPlane = 100.0f,
-                Position = new Vector3(0.0f, 1.5f, -1.0f),
-                Target = new Vector3(),
-                Up = Vector3.UnitY };
+            //FPSCamera = new Camera {
+            //    FOV = 60.0f,
+            //    AspectRatio = (float)GraphicsDevice.PresentationParameters.BackBufferWidth / (float)GraphicsDevice.PresentationParameters.BackBufferHeight,
+            //    NearPlane = 0.1f,
+            //    FarPlane = 100.0f,
+            //    Position = new Vector3(0.0f, 1.5f, -1.0f),
+            //    Target = new Vector3(),
+            //    Up = Vector3.UnitY };
             Logger.Get().SetLogLevel("main", LogLevel.warning);
-            World = Matrix.CreateWorld(new Vector3(), Vector3.UnitZ, Vector3.UnitY);
+
             lastKeyboardState = new KeyboardState();
             base.Initialize();
         }
@@ -55,7 +53,8 @@ namespace WololoGame
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
-            background = Content.Load<Texture2D>("images/backgroujnd1");
+            backgroundDark = Content.Load<Texture2D>("images/background_dark");
+            backgroundSunny = Content.Load<Texture2D>("images/background_sunny");
 
             Logger.Get().Log("main", LogLevel.warning, "LoadingContentFinished!"); 
         }
@@ -78,6 +77,9 @@ namespace WololoGame
         {
             var currentState = Keyboard.GetState();
 
+            if (currentState.IsKeyDown(Keys.Space) && lastKeyboardState.IsKeyUp(Keys.Space))
+                GlobalConfig.NightMode = !GlobalConfig.NightMode;
+
             lastKeyboardState = currentState;
             base.Update(gameTime);
         }
@@ -91,9 +93,9 @@ namespace WololoGame
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             spriteBatch.Begin();
-            spriteBatch.Draw(background,
+            spriteBatch.Draw(GlobalConfig.NightMode ? backgroundDark : backgroundSunny,
                 new Rectangle(0, 0, GraphicsDevice.PresentationParameters.BackBufferWidth, GraphicsDevice.PresentationParameters.BackBufferHeight),
-                Color.AliceBlue);
+                Color.White);
             spriteBatch.End();
  
             base.Draw(gameTime);
