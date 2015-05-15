@@ -83,9 +83,11 @@ namespace WololoGame
         {
             SpriteSheetDescription desc = new SpriteSheetDescription();
             desc.jumpFrameCount = 1;
-            desc.jumpFrameIndex = 4;
+            desc.jumpFrameIndices = new List<int> { 4 };
+            desc.jumpFrameTimespan = 100000;    // így sose vált
             desc.takingDamageFrameCount = 1;
-            desc.takingDamageFrameIndex = 6;
+            desc.takingDamageFrameIndices = new List<int> { 6 };
+            desc.takingDamageFrameTimespan = 100000;    // így sose vált
             desc.runFrameCount = 3;
             desc.runFrameIndices = new List<int> { 0, 1, 2 };
             desc.runFrameTimespan = 0.15f;

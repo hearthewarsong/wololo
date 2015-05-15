@@ -18,14 +18,20 @@ namespace WololoGame
     public struct SpriteSheetDescription
     {
         public int runFrameCount;
-        public int jumpFrameCount;
-        public int takingDamageFrameCount;
-
         public float runFrameTimespan;
-
         public List<int> runFrameIndices;
-        public int jumpFrameIndex;
-        public int takingDamageFrameIndex;
+
+        public int jumpFrameCount;
+        public int jumpFrameTimespan;
+        public List<int> jumpFrameIndices;
+
+        public int takingDamageFrameCount;
+        public int takingDamageFrameTimespan;
+        public List<int> takingDamageFrameIndices;
+
+        public int standingFrameIndex;
+        public int frameHeight;
+        public int frameWidth;
     }
 
 
