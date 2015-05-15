@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,6 +31,11 @@ namespace WololoGame
 
     public class GraphicsObject : DrawableGameComponent
     {
+        /// <summary>
+        /// Used to draw the sprites
+        /// </summary>
+        public static SpriteBatch spriteBatch { get; set; }
+
         public GraphicsObject(Game game, float width, float height, Vector2 pos = new Vector2()) :base(game)
         {
             Width = width;
@@ -62,6 +68,9 @@ namespace WololoGame
 
         public AnimatedGraphics(Game game, float width, float height, Vector2 pos = new Vector2()) :
             base(game, width, height, pos)
+        {
+        }
+        public AnimatedGraphics(Game game, IPhysicsObject po) : base(game, po)
         {
         }
 

@@ -1,9 +1,4 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 
 namespace WololoGame.Graphics
@@ -19,12 +14,14 @@ namespace WololoGame.Graphics
         public static Texture2D tex_dark_middle;
         public static Texture2D tex_dark_soil;
 
-        public static SpriteBatch spriteBatch { get; set; }
-
         public Visibility VisibilityMode { get; set; }
 
-        public GrassyPlatform(Game1 game, float width, float height, Vector2 pos = new Vector2(), Visibility m = Visibility.Both):
+        public GrassyPlatform(Game1 game, float width, float height, Vector2 pos = new Vector2(), Visibility m = Visibility.Both) :
             base(game, width, height, pos)
+        {
+            VisibilityMode = m;
+        }
+        public GrassyPlatform(Game game, IPhysicsObject po, Visibility m) : base(game, po)
         {
             VisibilityMode = m;
         }
@@ -37,8 +34,9 @@ namespace WololoGame.Graphics
 
             var screenWidth = GraphicsDevice.PresentationParameters.BackBufferWidth;
             var screenHeight = GraphicsDevice.PresentationParameters.BackBufferHeight;
+            var aspectRatio = (float)screenWidth / screenHeight;
 
-            spriteBatch.Begin();
+//            spriteBatch.Begin();
 
             spriteBatch.Draw(GlobalConfig.NightMode ? tex_dark_soil : tex_sunny_soil,
                 new Rectangle((int)(Position.X * screenWidth),
@@ -50,7 +48,7 @@ namespace WololoGame.Graphics
             spriteBatch.Draw(GlobalConfig.NightMode ? tex_dark_leftCorner : tex_sunny_leftCorner,
                 new Rectangle((int)(Position.X * screenWidth),
                     (int)(Position.Y * screenHeight),
-                    screenWidth / 24,
+                    (int)(screenWidth / (24 * aspectRatio)),
                     screenHeight / 24),
                 Color.White);
 
@@ -60,7 +58,7 @@ namespace WololoGame.Graphics
                 spriteBatch.Draw(GlobalConfig.NightMode ? tex_dark_middle : tex_sunny_middle,
                     new Rectangle((int)((Position.X + i) * screenWidth),
                         (int)(Position.Y * screenHeight),
-                        screenWidth / 48,
+                        (int)(screenWidth / (48 * aspectRatio)),
                         screenHeight / 24),
                     Color.White);
             }
@@ -68,11 +66,11 @@ namespace WololoGame.Graphics
             spriteBatch.Draw(GlobalConfig.NightMode ? tex_dark_rightCorner : tex_sunny_rightCorner,
                 new Rectangle((int)((Position.X + i) * screenWidth),
                     (int)(Position.Y * screenHeight),
-                    screenWidth / 24,
+                    (int)(screenWidth / (24 * aspectRatio)),
                     screenHeight / 24),
                 Color.White);
 
-            spriteBatch.End();
+     //       spriteBatch.End();
         }
     }
 }

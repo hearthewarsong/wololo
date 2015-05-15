@@ -13,11 +13,11 @@ namespace WololoGame.Graphics
         public static Texture2D playerTexture;
         public static SpriteSheetDescription sheetDescription;
 
-        public Player(Game game, float width, float height, SpriteSheetDescription d,  Vector2 pos = new Vector2()) :
-            base(game, width, height, pos)
+        public Player(Game game, IPhysicsObject po) : base(game, po)
         {
             moveState = State.Standing;
         }
+
 
         public override void Update(GameTime gameTime)
         {

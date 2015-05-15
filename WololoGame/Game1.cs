@@ -30,8 +30,22 @@ namespace WololoGame
             Content.RootDirectory = "Content";
         }
 
-        void createGrassyTerrain(Vector4 rec, Visibility v)
+        public void CreateGrassyTerrain(Vector4 rec, Visibility v)
         {
+            IPhysicsObject physicsObj = physics.AbbObject(
+                rec.X,
+                rec.Y,
+                rec.Z,
+                rec.W
+                );
+            GrassyPlatform platform = new GrassyPlatform(this, physicsObj, v);
+            Components.Add(platform);
+        }
+        public void CreatePlayer(Vector4 rec)
+        {
+            if (player != null)
+                throw new Exception("Error! Only one player is allowed!");
+
             IPhysicsObject physicsObj = physics.AbbObject(
                 rec.X,
                 rec.Y,
@@ -42,15 +56,9 @@ namespace WololoGame
                 true,
                 new PlayerLogic()
                 );
-            GrassyPlatform platform = new GrassyPlatform(this, (float)physicsObj.Width, (float)physicsObj.Height, new Vector2((float)physicsObj.X, (float)physicsObj.Y));
-            Components.Add(platform);
+            player = new Player(this, physicsObj);
+            Components.Add(player);
         }
-        void createPlayer(Vector4 rec)
-        {
-
-        }
-
-
 
 
         /// <summary>
@@ -61,36 +69,28 @@ namespace WololoGame
         /// </summary>
         protected override void Initialize()
         {
-            //FPSCamera = new Camera {
-            //    FOV = 60.0f,
-            //    AspectRatio = (float)GraphicsDevice.PresentationParameters.BackBufferWidth / (float)GraphicsDevice.PresentationParameters.BackBufferHeight,
-            //    NearPlane = 0.1f,
-            //    FarPlane = 100.0f,
-            //    Position = new Vector3(0.0f, 1.5f, -1.0f),
-            //    Target = new Vector3(),
-            //    Up = Vector3.UnitY };
             Logger.Get().SetLogLevel("main", LogLevel.warning);
 
             lastKeyboardState = new KeyboardState();
             MapLoader maploader = new MapLoader();
 
             maploader.LoadMap(this, "maps/level1.txt");
-            
-            Components.Add(new GrassyPlatform(this, 0.11f, 0.2f, new Vector2(0.05f, 0.75f), Visibility.NightModeOnly));
-            Components.Add(new GrassyPlatform(this, 0.4f, 0.18f, new Vector2(0.666f, 0.75f)));
+            InitSpriteSheets();
 
+            base.Initialize();
+        }
+
+        void InitSpriteSheets()
+        {
             SpriteSheetDescription desc = new SpriteSheetDescription();
             desc.jumpFrameCount = 1;
             desc.jumpFrameIndex = 4;
             desc.takingDamageFrameCount = 1;
             desc.takingDamageFrameIndex = 6;
             desc.runFrameCount = 3;
-            desc.runFrameIndices = new List<int> { 0, 1, 2};
+            desc.runFrameIndices = new List<int> { 0, 1, 2 };
             desc.runFrameTimespan = 0.15f;
-
-            player = new Player(this, 96.0f / GraphicsDevice.PresentationParameters.BackBufferWidth, 128.0f / GraphicsDevice.PresentationParameters.BackBufferHeight, desc, new Vector2(0.666f, 0.8f));
-            Components.Add(player);
-            base.Initialize();
+            Player.sheetDescription = desc;
         }
 
         /// <summary>
@@ -112,7 +112,7 @@ namespace WololoGame
             GrassyPlatform.tex_sunny_middle = Content.Load<Texture2D>("images/grass_sunny_middle");
             GrassyPlatform.tex_sunny_rightCorner = Content.Load<Texture2D>("images/grass_sunny_right_corner");
             GrassyPlatform.tex_sunny_soil = Content.Load<Texture2D>("images/grass_sunny_soil");
-            GrassyPlatform.spriteBatch = this.spriteBatch;
+            GrassyPlatform.spriteBatch = spriteBatch;
 
             Logger.Get().Log("main", LogLevel.warning, "LoadingContentFinished!"); 
         }
@@ -167,9 +167,8 @@ namespace WololoGame
             spriteBatch.Draw(GlobalConfig.NightMode ? backgroundDark : backgroundSunny,
                 new Rectangle(0, 0, GraphicsDevice.PresentationParameters.BackBufferWidth, GraphicsDevice.PresentationParameters.BackBufferHeight),
                 Color.White);
-            spriteBatch.End();
- 
             base.Draw(gameTime);
+            spriteBatch.End();
         }
     }
 }
