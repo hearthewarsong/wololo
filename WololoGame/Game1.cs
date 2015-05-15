@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework.Input;
+using WololoGame.Graphics;
 
 namespace WololoGame
 {
@@ -42,6 +43,10 @@ namespace WololoGame
             Logger.Get().SetLogLevel("main", LogLevel.warning);
 
             lastKeyboardState = new KeyboardState();
+            Components.Add(new GrassyPlatform(this, 0.3f, 0.1f, new Vector2(0.5f, 0.5f)));
+            Components.Add(new GrassyPlatform(this, 0.11f, 0.2f, new Vector2(0.05f, 0.75f), Visibility.NightModeOnly));
+            Components.Add(new GrassyPlatform(this, 0.4f, 0.18f, new Vector2(0.666f, 0.75f)));
+           // Components.Add(new Player(this, 96.0f / GraphicsDevice.PresentationParameters.BackBufferWidth, 128.0f / GraphicsDevice.PresentationParameters.BackBufferHeight, new Vector2(0.666f, 0.8f)));
             base.Initialize();
         }
 
@@ -55,6 +60,16 @@ namespace WololoGame
             spriteBatch = new SpriteBatch(GraphicsDevice);
             backgroundDark = Content.Load<Texture2D>("images/background_dark");
             backgroundSunny = Content.Load<Texture2D>("images/background_sunny");
+
+            GrassyPlatform.tex_dark_leftCorner = Content.Load<Texture2D>("images/grass_dark_left_corner");
+            GrassyPlatform.tex_dark_middle = Content.Load<Texture2D>("images/grass_dark_middle");
+            GrassyPlatform.tex_dark_rightCorner = Content.Load<Texture2D>("images/grass_dark_right_corner");
+            GrassyPlatform.tex_dark_soil = Content.Load<Texture2D>("images/grass_dark_soil");
+            GrassyPlatform.tex_sunny_leftCorner = Content.Load<Texture2D>("images/grass_sunny_left_corner");
+            GrassyPlatform.tex_sunny_middle = Content.Load<Texture2D>("images/grass_sunny_middle");
+            GrassyPlatform.tex_sunny_rightCorner = Content.Load<Texture2D>("images/grass_sunny_right_corner");
+            GrassyPlatform.tex_sunny_soil = Content.Load<Texture2D>("images/grass_sunny_soil");
+            GrassyPlatform.spriteBatch = this.spriteBatch;
 
             Logger.Get().Log("main", LogLevel.warning, "LoadingContentFinished!"); 
         }
