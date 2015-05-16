@@ -11,6 +11,7 @@ namespace WololoGame.Logic
     {
         protected Vector2 startingPoint;
         IPhysicsObject po;
+        bool dieOnNextLogic;
         public override void CollidedWith(ILogicObjectForPhysics otherObject)
         {
             var logicObject = otherObject as LogicObjectBase;
@@ -19,14 +20,14 @@ namespace WololoGame.Logic
                 if (logicObject.IsDeadly())
                 {
                     Logger.Get().Log("main", LogLevel.error, "Halál");
-                    Die();
+                    dieOnNextLogic = true;
                 }
             }
         }
 
         public void Update(GameTime gameTime)
         {
-            if (po.Y> 10)
+            if (dieOnNextLogic || po.Y> 10)
             {
                 Die();
             }
@@ -38,6 +39,7 @@ namespace WololoGame.Logic
             po.Y = startingPoint.Y;
             po.PVX = 0;
             po.PVY = 0;
+            dieOnNextLogic = false;
         }
 
         public PlayerLogic(IPhysicsObject po)

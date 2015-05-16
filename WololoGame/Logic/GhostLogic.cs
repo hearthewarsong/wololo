@@ -13,8 +13,6 @@ namespace WololoGame.Logic
             var logicObject = otherObject as LogicObjectBase;
             if (logicObject != null)
             {
-                if (logicObject.IsDeadly())
-                    Logger.Get().Log("main", LogLevel.error, "Halál");
             }
         }
 

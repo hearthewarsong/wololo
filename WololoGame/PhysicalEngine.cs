@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
+using System.Diagnostics;
 
 namespace WololoGame
 {
@@ -33,7 +34,8 @@ namespace WololoGame
     }
     class PhysicsObject : IPhysicsObject
     {
-        public double X { get; set; }
+        private double x;
+        public double X { get { return x; } set { if (x == -10.0) Debug.Assert(false); x = value;  } }
         public double Y { get; set; }
         public double Height { get; set; }
         public double Width { get; set; }

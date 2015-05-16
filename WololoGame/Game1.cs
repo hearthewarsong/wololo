@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework.Input;
 using WololoGame.Graphics;
 using System;
 using WololoGame.Logic;
+using System.Diagnostics;
 
 namespace WololoGame
 {
@@ -202,12 +203,16 @@ namespace WololoGame
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
+            Stopwatch sw = new Stopwatch();
+            sw.Start();
             HandleInput();
             base.Update(gameTime);
             foreach (var item in loUpdates)
             {
                 item.Update(gameTime);
             }
+            sw.Stop();
+            Debug.WriteLine("Update: " + sw.ElapsedMilliseconds);
         }
 
         private void HandleInput()
@@ -270,6 +275,11 @@ namespace WololoGame
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
+            var vp = graphics.GraphicsDevice.Viewport;
+            //graphics.GraphicsDevice.Viewport = new Viewport(new Rectangle((int)(-1 * (player.physicsObject.X - 0.5) * vp.Width), -1 * (int)((player.physicsObject.Y - 0.5) * vp.Height),vp.Width, vp.Height));
+            vp = graphics.GraphicsDevice.Viewport;
+            Stopwatch sw = new Stopwatch();
+            sw.Start();
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             spriteBatch.Begin();
@@ -279,14 +289,16 @@ namespace WololoGame
             spriteBatch.Draw(texture,
                 new Rectangle(0, 0, GraphicsDevice.PresentationParameters.BackBufferWidth, GraphicsDevice.PresentationParameters.BackBufferHeight),
                 new Rectangle(
-                    0,
-                    0,
+                    0, 0,
+
                     (int)(widthRatio * texture.Width),
                     (int)(heightRatio * texture.Height)
                     ),
                 Color.White);
             base.Draw(gameTime);
             spriteBatch.End();
+            sw.Stop();
+            Debug.WriteLine("Draw: " + sw.ElapsedMilliseconds);
         }
     }
 }
