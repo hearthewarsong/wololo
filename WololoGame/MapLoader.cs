@@ -52,6 +52,13 @@ namespace WololoGame
                             game.CreateMovingGrassyTerrain(new Vector4(int.Parse(fields[1]) / 24.0f, int.Parse(fields[2]) / 24.0f
                                 , int.Parse(fields[3]) / 24.0f, int.Parse(fields[4]) / 24.0f), v, int.Parse(fields[6]) / 24.0f, int.Parse(fields[7]) / 24.0f, float.Parse(fields[8]) / 24.0f);
                         }
+                        else if (fields[0].ToLower() == "butterfly")
+                        {
+                            game.CreateButterfly(new Vector4(int.Parse(fields[1]) / 24.0f, int.Parse(fields[2]) / 24.0f
+                                , float.Parse(fields[3]) / 24.0f, float.Parse(fields[4]) / 24.0f));
+
+                        }
+
                     }
                 }
             }

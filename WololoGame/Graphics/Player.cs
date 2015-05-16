@@ -19,70 +19,7 @@ namespace WololoGame.Graphics
 //            moveState = State.Standing;
 //            frameIndex = sheetDescription.standingFrameIndex;
             frameIndex = sheetDescription.runFrameIndices[0];
-        }
-
-        public override void Update(GameTime gameTime)
-        {
-            double elapsedSeconds = gameTime.ElapsedGameTime.TotalSeconds;
-
-            Position = new Vector2((float)physicsObject.X, (float)physicsObject.Y);
-            frameTime += elapsedSeconds;
-            int counter = 0;
-
-            switch (moveState)
-            {
-                case State.Standing:
-                    frameIndex = sheetDescription.standingFrameIndex;
-                    break;
-                case State.Running:
-                    while (frameTime > sheetDescription.runFrameTimespan)
-                    {
-                        frameTime -= sheetDescription.runFrameTimespan;
-                        counter++;
-                    }
-                    for (int i = 0; i < sheetDescription.runFrameCount; i++)
-                    {
-                        if (frameIndex == sheetDescription.runFrameIndices[i])
-                        {
-                            // Itt counter értéke lehet 0 is, ekkor tulképp ugyanaz marad a frameIndex
-                            frameIndex = sheetDescription.runFrameIndices[(i + counter) % sheetDescription.runFrameCount];
-                            break;
-                        }
-                    }
-                    break;
-                case State.Jumping:
-                    while (frameTime > sheetDescription.jumpFrameTimespan)
-                    {
-                        frameTime -= sheetDescription.jumpFrameTimespan;
-                        counter++;
-                    }
-                    for (int i = 0; i < sheetDescription.jumpFrameCount; i++)
-                    {
-                        if (frameIndex == sheetDescription.jumpFrameIndices[i])
-                        {
-                            frameIndex = sheetDescription.jumpFrameIndices[(i + counter) % sheetDescription.jumpFrameCount];
-                            break;
-                        }
-                    }
-                    break;
-                case State.TakingDamage:
-                    while (frameTime > sheetDescription.takingDamageFrameTimespan)
-                    {
-                        frameTime -= sheetDescription.takingDamageFrameTimespan;
-                        counter++;
-                    }
-                    for (int i = 0; i < sheetDescription.takingDamageFrameCount; i++)
-                    {
-                        if (frameIndex == sheetDescription.takingDamageFrameIndices[i])
-                        {
-                            frameIndex = sheetDescription.takingDamageFrameIndices[(i + 1) % sheetDescription.takingDamageFrameCount];
-                            break;
-                        }
-                    }
-                    break;
-            }
-
-            base.Update(gameTime);
+            facingLeft = true;
         }
 
         public override void Draw(GameTime gameTime)
@@ -102,6 +39,17 @@ namespace WololoGame.Graphics
                  new Vector2(),
                  facingLeft ? SpriteEffects.None : SpriteEffects.FlipHorizontally,
                  0.0f);
+        }
+
+
+        public override SpriteSheetDescription GetSheetDescFromDerived()
+        {
+            return sheetDescription;
+        }
+
+        public override Texture2D GetTextureFromDerived()
+        {
+            return playerTexture;
         }
     }
 }

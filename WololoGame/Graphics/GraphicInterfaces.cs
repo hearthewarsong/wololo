@@ -22,11 +22,11 @@ namespace WololoGame
         public List<int> runFrameIndices;
 
         public int jumpFrameCount;
-        public int jumpFrameTimespan;
+        public float jumpFrameTimespan;
         public List<int> jumpFrameIndices;
 
         public int takingDamageFrameCount;
-        public int takingDamageFrameTimespan;
+        public float takingDamageFrameTimespan;
         public List<int> takingDamageFrameIndices;
 
         public int standingFrameIndex;
@@ -64,7 +64,7 @@ namespace WololoGame
 
     }
 
-    public class AnimatedGraphics : GraphicsObject
+    public abstract class AnimatedGraphics : GraphicsObject
     {
         public enum State
         {
@@ -77,16 +77,84 @@ namespace WololoGame
         public AnimatedGraphics(Game game, float width, float height, Vector2 pos = new Vector2()) :
             base(game, width, height, pos)
         {
+            frameTime = 0;
+            runIndicator = 0;
+            jumpIndicator = 0;
+            takingDamageIndicator = 0;
         }
         public AnimatedGraphics(Game game, IPhysicsObject po) : base(game, po)
         {
+            frameTime = 0;
+            runIndicator = 0;
+            jumpIndicator = 0;
+            takingDamageIndicator = 0;
         }
+
+        public override void Update(GameTime gameTime)
+        {
+            double elapsedSeconds = gameTime.ElapsedGameTime.TotalSeconds;
+            Position = new Vector2((float)physicsObject.X, (float)physicsObject.Y);
+            frameTime += elapsedSeconds;
+            int counter = 0;
+            var sheetDescription = GetSheetDescFromDerived();
+
+            switch (moveState)
+            {
+                case State.Standing:
+                    frameIndex = sheetDescription.standingFrameIndex;
+                    break;
+                case State.Running:
+                    while (frameTime > sheetDescription.runFrameTimespan)
+                    {
+                        frameTime -= sheetDescription.runFrameTimespan;
+                        counter++;
+                    }
+                    if (counter > 0)
+                    {
+                        runIndicator = (runIndicator + counter) % sheetDescription.runFrameCount;
+                        frameIndex = sheetDescription.runFrameIndices[runIndicator];
+                    }
+                    break;
+                case State.Jumping:
+                    while (frameTime > sheetDescription.jumpFrameTimespan)
+                    {
+                        frameTime -= sheetDescription.jumpFrameTimespan;
+                        counter++;
+                    }
+                    if (counter > 0)
+                    {
+                        jumpIndicator = (jumpIndicator + counter) % sheetDescription.jumpFrameCount;
+                        frameIndex = sheetDescription.jumpFrameIndices[jumpIndicator];
+                    }
+                    break;
+                case State.TakingDamage:
+                    while (frameTime > sheetDescription.takingDamageFrameTimespan)
+                    {
+                        frameTime -= sheetDescription.takingDamageFrameTimespan;
+                        counter++;
+                    }
+                    if (counter > 0)
+                    {
+                        takingDamageIndicator = (takingDamageIndicator + counter) % sheetDescription.takingDamageFrameCount;
+                        frameIndex = sheetDescription.takingDamageFrameIndices[takingDamageIndicator];
+                    }
+                    break;
+            }
+
+            base.Update(gameTime);
+        }
+
+        public abstract SpriteSheetDescription GetSheetDescFromDerived();
+        public abstract Texture2D GetTextureFromDerived();
 
         public State moveState { get; set; }
         public bool facingLeft { get; set; }
 
         protected double frameTime;
         protected int frameIndex;
+        protected int runIndicator;
+        protected int jumpIndicator;
+        protected int takingDamageIndicator;
     }
 
     interface IGraphicsFactory
