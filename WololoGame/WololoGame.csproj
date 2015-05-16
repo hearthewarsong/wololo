@@ -135,6 +135,7 @@
     <Compile Include="Graphics\GrassyPlatform.cs" />
     <Compile Include="Graphics\Player.cs" />
     <Compile Include="Logger.cs" />
+    <Compile Include="Logic\GhostLogic.cs" />
     <Compile Include="Logic\LogicObjectBase.cs" />
     <Compile Include="MapLoader.cs" />
     <Compile Include="Logic\PlayerLogic.cs" />

@@ -41,7 +41,6 @@ namespace WololoGame
             GrassyPlatform platform = new GrassyPlatform(this, physicsObj, v);
             Components.Add(platform);
         }
-        GrassyPlatform playerPlatform;
         public void CreatePlayer(Vector4 rec)
         {
             if (player != null)
@@ -60,6 +59,20 @@ namespace WololoGame
             player = new Player(this, physicsObj);
             Components.Add(player);
         }
+        public void CreateButterfly(Vector4 rec)
+        {
+            IPhysicsObject physicsObj = physics.AbbObject(
+                rec.X,
+                rec.Y,
+                rec.Z,
+                rec.W,
+                false,
+                false,
+                true,
+                new GhostLogic()                
+                );
+            Components.Add(new Butterfly(this, physicsObj));
+        }
 
         /// <summary>
         /// Allows the game to perform any initialization it needs to before starting to run.
@@ -72,6 +85,7 @@ namespace WololoGame
             Logger.Get().SetLogLevel("main", LogLevel.warning);
 
             lastKeyboardState = new KeyboardState();
+            Butterfly.randomGenerator = new Random();
             MapLoader maploader = new MapLoader();
 
             InitSpriteSheets();
@@ -91,10 +105,38 @@ namespace WololoGame
             Player.sheetDescription.takingDamageFrameTimespan = 100000;    // így sose vált
             Player.sheetDescription.runFrameCount = 3;
             Player.sheetDescription.runFrameIndices = new List<int> { 6, 5, 4, 5 };
-            Player.sheetDescription.runFrameTimespan = 0.15f;
+            Player.sheetDescription.runFrameTimespan = 0.12f;
             Player.sheetDescription.standingFrameIndex = 6;
             Player.sheetDescription.frameHeight = 128;
             Player.sheetDescription.frameWidth = 96;
+
+            Butterfly.sheetDescription_dark = new SpriteSheetDescription();
+            Butterfly.sheetDescription_dark.jumpFrameCount = 10;
+            Butterfly.sheetDescription_dark.jumpFrameIndices = new List<int> { 0, 1, 2, 3, 4, 5, 4, 3, 2, 1 };
+            Butterfly.sheetDescription_dark.jumpFrameTimespan = 0.055f;    // így sose vált
+            Butterfly.sheetDescription_dark.takingDamageFrameCount = 1;
+            Butterfly.sheetDescription_dark.takingDamageFrameIndices = new List<int> { 0 };
+            Butterfly.sheetDescription_dark.takingDamageFrameTimespan = 100000;    // így sose vált
+            Butterfly.sheetDescription_dark.runFrameCount = 1;
+            Butterfly.sheetDescription_dark.runFrameIndices = new List<int> { 0 };
+            Butterfly.sheetDescription_dark.runFrameTimespan = 100000;
+            Butterfly.sheetDescription_dark.standingFrameIndex = 0;
+            Butterfly.sheetDescription_dark.frameHeight = 80;
+            Butterfly.sheetDescription_dark.frameWidth = 80;
+
+            Butterfly.sheetDescription_sunny = new SpriteSheetDescription();
+            Butterfly.sheetDescription_sunny.jumpFrameCount = 10;
+            Butterfly.sheetDescription_sunny.jumpFrameIndices = new List<int> { 0, 1, 2, 3, 4, 5, 4, 3, 2, 1 };
+            Butterfly.sheetDescription_sunny.jumpFrameTimespan = 0.055f;    // így sose vált
+            Butterfly.sheetDescription_sunny.takingDamageFrameCount = 1;
+            Butterfly.sheetDescription_sunny.takingDamageFrameIndices = new List<int> { 0 };
+            Butterfly.sheetDescription_sunny.takingDamageFrameTimespan = 100000;    // így sose vált
+            Butterfly.sheetDescription_sunny.runFrameCount = 1;
+            Butterfly.sheetDescription_sunny.runFrameIndices = new List<int> { 0 };
+            Butterfly.sheetDescription_sunny.runFrameTimespan = 100000;
+            Butterfly.sheetDescription_sunny.standingFrameIndex = 0;
+            Butterfly.sheetDescription_sunny.frameHeight = 80;
+            Butterfly.sheetDescription_sunny.frameWidth = 80;
         }
 
         /// <summary>
@@ -120,6 +162,9 @@ namespace WololoGame
             GrassyPlatform.tex_sunny_soil = Content.Load<Texture2D>("images/grass_sunny_soil");
 
             Player.playerTexture = Content.Load<Texture2D>("images/player");
+
+            Butterfly.butterflyTexture_dark = Content.Load<Texture2D>("images/butterfly_dark");
+            Butterfly.butterflyTexture_sunny = Content.Load<Texture2D>("images/butterfly_sunny");
 
             Logger.Get().Log("main", LogLevel.warning, "LoadingContentFinished!"); 
         }
@@ -152,7 +197,7 @@ namespace WololoGame
             if (currentState.IsKeyDown(Keys.H) && lastKeyboardState.IsKeyUp(Keys.H))
                 GlobalConfig.NightMode = !GlobalConfig.NightMode;
 
-            if (currentState.IsKeyDown(Keys.LeftAlt) && currentState.IsKeyDown(Keys.Enter) && lastKeyboardState.IsKeyUp(Keys.Enter))
+            if (currentState.IsKeyDown(Keys.F) && lastKeyboardState.IsKeyUp(Keys.F))
                 graphics.ToggleFullScreen();
 
             if (currentState.IsKeyDown(Keys.Space) && lastKeyboardState.IsKeyUp(Keys.Space))
