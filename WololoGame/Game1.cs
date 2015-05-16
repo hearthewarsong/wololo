@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework.Input;
 using WololoGame.Graphics;
 using System;
 using WololoGame.Logic;
+using Microsoft.Xna.Framework.Audio;
 
 namespace WololoGame
 {
@@ -17,9 +18,24 @@ namespace WololoGame
         SpriteBatch spriteBatch;
         KeyboardState lastKeyboardState;
         PhysicalEngine physics;
+        /// <summary>
+        /// The sound clip played as background music
+        /// </summary>
+        private static SoundEffect bgMusic;
+        private static SoundEffectInstance bgMusicInstance;
 
         Texture2D backgroundDark;
         Texture2D backgroundSunny;
+
+        private Effect bloom_effect;
+        private RenderTarget2D texTarget;
+        private RenderTarget2D downsampledTexTarget;
+        private RenderTarget2D blurredTexTarget;
+        private RenderTarget2D upsampledTexTarget;
+        private VertexBuffer post_vertexBuffer_screen;
+        // screen-sized quad stretched to fit the screen
+        private IndexBuffer post_indexBuffer;
+        // index buffer for the screen-sized quad
 
         Player player;
 
@@ -60,6 +76,7 @@ namespace WololoGame
             physicsObj.LogicObject = pl;
             loUpdates.Add(pl);
             player = new Player(this, physicsObj);
+            pl.player = player;
             Components.Add(player);
         }
         public void CreateButterfly(Vector4 rec)
@@ -76,6 +93,7 @@ namespace WololoGame
                 );
             Components.Add(new Butterfly(this, physicsObj));
         }
+
 
         /// <summary>
         /// Allows the game to perform any initialization it needs to before starting to run.
@@ -94,6 +112,37 @@ namespace WololoGame
             InitSpriteSheets();
             maploader.LoadMap(this, "Content/maps/beginning.txt");
             Components.Add(physics);
+
+            texTarget = new RenderTarget2D(GraphicsDevice, GraphicsDevice.PresentationParameters.BackBufferWidth, GraphicsDevice.PresentationParameters.BackBufferHeight, false, SurfaceFormat.Color, DepthFormat.Depth16);
+            downsampledTexTarget = new RenderTarget2D(GraphicsDevice, (int)(GraphicsDevice.PresentationParameters.BackBufferWidth / 2.0f), (int)(GraphicsDevice.PresentationParameters.BackBufferHeight / 2.0f));
+            blurredTexTarget = new RenderTarget2D(GraphicsDevice, (int)(GraphicsDevice.PresentationParameters.BackBufferWidth / 2.0f), (int)(GraphicsDevice.PresentationParameters.BackBufferHeight / 2.0f));
+            upsampledTexTarget = new RenderTarget2D(GraphicsDevice, GraphicsDevice.PresentationParameters.BackBufferWidth, GraphicsDevice.PresentationParameters.BackBufferHeight);
+
+            Window.ClientSizeChanged += (s, e) =>
+            {
+                graphics.PreferredBackBufferWidth = Window.ClientBounds.Width;
+                graphics.PreferredBackBufferHeight = Window.ClientBounds.Height;
+                graphics.ApplyChanges();
+
+                // Prepare the render targets used for post effects
+                texTarget = new RenderTarget2D(GraphicsDevice, GraphicsDevice.PresentationParameters.BackBufferWidth, GraphicsDevice.PresentationParameters.BackBufferHeight, false, SurfaceFormat.Color, DepthFormat.Depth16);
+                downsampledTexTarget = new RenderTarget2D(GraphicsDevice, (int)(GraphicsDevice.PresentationParameters.BackBufferWidth / 2.0f), (int)(GraphicsDevice.PresentationParameters.BackBufferHeight / 2.0f));
+                blurredTexTarget = new RenderTarget2D(GraphicsDevice, (int)(GraphicsDevice.PresentationParameters.BackBufferWidth / 2.0f), (int)(GraphicsDevice.PresentationParameters.BackBufferHeight / 2.0f));
+                upsampledTexTarget = new RenderTarget2D(GraphicsDevice, GraphicsDevice.PresentationParameters.BackBufferWidth, GraphicsDevice.PresentationParameters.BackBufferHeight);
+            };
+
+            var vertices = new VertexPositionTexture[4];
+            post_vertexBuffer_screen = new VertexBuffer(GraphicsDevice, VertexPositionTexture.VertexDeclaration, vertices.Length, BufferUsage.WriteOnly);
+            vertices[0] = new VertexPositionTexture() { Position = new Vector3(1, 1, 0), TextureCoordinate = new Vector2(1, 0) };
+            vertices[1] = new VertexPositionTexture() { Position = new Vector3(1, -1, 0), TextureCoordinate = new Vector2(1, 1) };
+            vertices[2] = new VertexPositionTexture() { Position = new Vector3(-1, 1, 0), TextureCoordinate = new Vector2(0, 0) };
+            vertices[3] = new VertexPositionTexture() { Position = new Vector3(-1, -1, 0), TextureCoordinate = new Vector2(0, 1) };
+            post_vertexBuffer_screen.SetData<VertexPositionTexture>(vertices);
+
+            var indices = new ushort[4];
+            for (ushort i = 0; i < (ushort)indices.Length; i++) indices[i] = i;
+            post_indexBuffer = new IndexBuffer(GraphicsDevice, IndexElementSize.SixteenBits, indices.Length, BufferUsage.WriteOnly);
+
             base.Initialize();
         }
 
@@ -165,9 +214,14 @@ namespace WololoGame
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
             GraphicsObject.spriteBatch = spriteBatch;
+//            bgMusic = Content.Load<SoundEffect>("sounds/bgmusic");
+//            bgMusicInstance = bgMusic.CreateInstance();
+//            bgMusicInstance.IsLooped = true;
+//            bgMusicInstance.Play();
 
             backgroundDark = Content.Load<Texture2D>("images/background_dark");
             backgroundSunny = Content.Load<Texture2D>("images/background_sunny");
+            bloom_effect = Content.Load<Effect>("post_effects/bloom");
 
             GrassyPlatform.tex_dark_leftCorner = Content.Load<Texture2D>("images/grass_dark_left_corner");
             GrassyPlatform.tex_dark_middle = Content.Load<Texture2D>("images/grass_dark_middle");
@@ -184,6 +238,33 @@ namespace WololoGame
             Butterfly.butterflyTexture_sunny = Content.Load<Texture2D>("images/butterfly_sunny");
 
             Logger.Get().Log("main", LogLevel.warning, "LoadingContentFinished!"); 
+        }
+
+        private void BlurHighlights(RenderTarget2D source)
+        {
+            // Apply horizontal blur
+            GraphicsDevice.SetRenderTarget(downsampledTexTarget);
+            GraphicsDevice.SetVertexBuffer(post_vertexBuffer_screen);
+            GraphicsDevice.Indices = post_indexBuffer;
+            bloom_effect.Parameters["originalTex"].SetValue(source);
+            bloom_effect.Parameters["threshold"].SetValue(0.3f);
+            bloom_effect.Parameters["screenSize"].SetValue(new Vector2(source.Width, source.Height));
+            bloom_effect.Techniques[0].Passes[0].Apply();
+            GraphicsDevice.DrawPrimitives(PrimitiveType.TriangleStrip, 0, 2);
+
+            // Apply vertical blur
+            GraphicsDevice.SetRenderTarget(blurredTexTarget);
+            bloom_effect.Parameters["originalTex"].SetValue(downsampledTexTarget);
+            bloom_effect.Parameters["screenSize"].SetValue(new Vector2(downsampledTexTarget.Width, downsampledTexTarget.Height));
+            bloom_effect.Techniques[0].Passes[1].Apply();
+            GraphicsDevice.DrawPrimitives(PrimitiveType.TriangleStrip, 0, 2);
+
+            // Upsample the blurred texture and either present it on the screen or render it to a texture for further use
+            GraphicsDevice.SetRenderTarget(upsampledTexTarget);
+            bloom_effect.Parameters["originalTex"].SetValue(blurredTexTarget);
+            bloom_effect.Parameters["screenSize"].SetValue(new Vector2(blurredTexTarget.Width, blurredTexTarget.Height));
+            bloom_effect.Techniques[0].Passes[2].Apply();
+            GraphicsDevice.DrawPrimitives(PrimitiveType.TriangleStrip, 0, 2);
         }
 
         /// <summary>
@@ -228,7 +309,7 @@ namespace WololoGame
             }
 
             if (currentState.IsKeyDown(Keys.F) && lastKeyboardState.IsKeyUp(Keys.F))
-                graphics.ToggleFullScreen();
+                ToggleFullScreen();
 
             if (currentState.IsKeyDown(Keys.Up) && lastKeyboardState.IsKeyUp(Keys.Up))
             {
@@ -270,6 +351,11 @@ namespace WololoGame
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
+            GraphicsDevice.DepthStencilState = DepthStencilState.Default;
+            GraphicsDevice.RasterizerState = RasterizerState.CullCounterClockwise;
+            GraphicsDevice.BlendState = BlendState.NonPremultiplied;
+            // Render to texture
+            GraphicsDevice.SetRenderTarget(texTarget);
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             spriteBatch.Begin();
@@ -287,6 +373,44 @@ namespace WololoGame
                 Color.White);
             base.Draw(gameTime);
             spriteBatch.End();
+
+            // Apply blur effect on the highlighted areas (areas with luminance above a certain threshold)
+            BlurHighlights(texTarget);
+
+            // Switch to back buffer and set the screen-sized quad VB/IB
+            GraphicsDevice.SetRenderTarget(null);
+
+            // Apply the post effect and present it on the screen
+            bloom_effect.Parameters["originalTex"].SetValue(texTarget);
+            bloom_effect.Parameters["blurredTex"].SetValue(upsampledTexTarget);
+            bloom_effect.Parameters["originalIntensity"].SetValue(1.0f);
+            bloom_effect.Parameters["bloomIntensity"].SetValue(1.3f);
+            bloom_effect.Parameters["originalSaturation"].SetValue(1.0f);
+            bloom_effect.Parameters["bloomSaturation"].SetValue(1.0f);
+            bloom_effect.Techniques[0].Passes[3].Apply();
+            GraphicsDevice.DrawPrimitives(PrimitiveType.TriangleStrip, 0, 2);
+
         }
+
+        private void ToggleFullScreen()
+        {
+            graphics.ToggleFullScreen();
+            // Prepare the render targets used for post effects
+            texTarget = new RenderTarget2D(GraphicsDevice, GraphicsDevice.PresentationParameters.BackBufferWidth, GraphicsDevice.PresentationParameters.BackBufferHeight, false, SurfaceFormat.Color, DepthFormat.Depth16);
+            downsampledTexTarget = new RenderTarget2D(GraphicsDevice, (int)(GraphicsDevice.PresentationParameters.BackBufferWidth / 2.0f), (int)(GraphicsDevice.PresentationParameters.BackBufferHeight / 2.0f));
+            blurredTexTarget = new RenderTarget2D(GraphicsDevice, (int)(GraphicsDevice.PresentationParameters.BackBufferWidth / 2.0f), (int)(GraphicsDevice.PresentationParameters.BackBufferHeight / 2.0f));
+            upsampledTexTarget = new RenderTarget2D(GraphicsDevice, GraphicsDevice.PresentationParameters.BackBufferWidth, GraphicsDevice.PresentationParameters.BackBufferHeight);
+        }
+        /// <summary>
+        /// Stops the sound effects.
+        /// </summary>
+        /// <param name="disposing">true to release both managed and unmanaged resources; false to release only unmanaged resources.</param>
+  /*      protected override void Dispose(bool disposing)
+        {
+            if (null != bgMusicInstance && false == bgMusicInstance.IsDisposed)
+                bgMusicInstance.Stop();
+
+            base.Dispose(disposing);
+        }*/
     }
 }

@@ -4,12 +4,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WololoGame.Graphics;
 
 namespace WololoGame.Logic
 {
     public class PlayerLogic : LogicObjectBase, LogicObjectWithUpdate
     {
         protected Vector2 startingPoint;
+        public Player player;
         IPhysicsObject po;
         public override void CollidedWith(ILogicObjectForPhysics otherObject)
         {
@@ -38,6 +40,7 @@ namespace WololoGame.Logic
             po.Y = startingPoint.Y;
             po.PVX = 0;
             po.PVY = 0;
+            player.SetMoveState(MoveState.TakingDamage);
         }
 
         public PlayerLogic(IPhysicsObject po)
