@@ -54,9 +54,11 @@ namespace WololoGame
                 rec.W,
                 true,
                 true,
-                true,
-                new PlayerLogic()
+                true
                 );
+            PlayerLogic pl = new PlayerLogic(physicsObj);
+            physicsObj.LogicObject = pl;
+            loUpdates.Add(pl);
             player = new Player(this, physicsObj);
             Components.Add(player);
         }

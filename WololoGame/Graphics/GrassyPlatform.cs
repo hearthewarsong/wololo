@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework;
 
 namespace WololoGame.Graphics
 {
-    public class GrassyPlatform: GraphicsObject
+    public class GrassyPlatform : GraphicsObject
     {
         public static Texture2D tex_sunny_leftCorner;
         public static Texture2D tex_sunny_rightCorner;
@@ -30,13 +30,16 @@ namespace WololoGame.Graphics
         {
             if (GlobalConfig.NightMode && VisibilityMode == Visibility.SunnyModeOnly ||
                 !GlobalConfig.NightMode && VisibilityMode == Visibility.NightModeOnly)
+            {
+                physicsObject.HasPhysicalBody = false;
                 return;
-
+            }
+            physicsObject.HasPhysicalBody = true;
             var screenWidth = GraphicsDevice.PresentationParameters.BackBufferWidth;
             var screenHeight = GraphicsDevice.PresentationParameters.BackBufferHeight;
             var aspectRatio = (float)screenWidth / screenHeight;
 
-//            spriteBatch.Begin();
+            //            spriteBatch.Begin();
 
             spriteBatch.Draw(GlobalConfig.NightMode ? tex_dark_soil : tex_sunny_soil,
                 new Rectangle((int)(Position.X * screenHeight),
@@ -70,7 +73,7 @@ namespace WololoGame.Graphics
                     screenHeight / 24),
                 Color.White);
 
-     //       spriteBatch.End();
+            //       spriteBatch.End();
         }
     }
 }

@@ -28,6 +28,8 @@ namespace WololoGame
         double PVX { get; set; }
         double PVY { get; set; }
         bool CantJump { get; set; }
+
+        ILogicObjectForPhysics LogicObject { get; set; }
     }
     class PhysicsObject : IPhysicsObject
     {
@@ -43,10 +45,10 @@ namespace WololoGame
         public double MoveIntentionY { get; set; }
         public bool CantJump { get { return StandingOn == null; } set { PVY = 0; } }
 
-        private ILogicObjectForPhysics logicObject = null;
+        public ILogicObjectForPhysics LogicObject { get; set; } = null;
         public PhysicsObject(double X, double Y, double Height, double Width, ILogicObjectForPhysics logicObject = null)
         {
-            this.logicObject = logicObject;
+            this.LogicObject = logicObject;
             this.X = X;
             this.Y = Y;
             this.Height = Height;
@@ -55,9 +57,9 @@ namespace WololoGame
 
         public void CollidedWith(PhysicsObject pO)
         {
-            if (this.logicObject != null)
+            if (this.LogicObject != null)
             {
-                this.logicObject.CollidedWith(pO.logicObject);
+                this.LogicObject.CollidedWith(pO.LogicObject);
             }
         }
 
