@@ -81,17 +81,19 @@ namespace WololoGame
 
         void InitSpriteSheets()
         {
-            SpriteSheetDescription desc = new SpriteSheetDescription();
-            desc.jumpFrameCount = 1;
-            desc.jumpFrameIndices = new List<int> { 4 };
-            desc.jumpFrameTimespan = 100000;    // így sose vált
-            desc.takingDamageFrameCount = 1;
-            desc.takingDamageFrameIndices = new List<int> { 6 };
-            desc.takingDamageFrameTimespan = 100000;    // így sose vált
-            desc.runFrameCount = 3;
-            desc.runFrameIndices = new List<int> { 0, 1, 2 };
-            desc.runFrameTimespan = 0.15f;
-            Player.sheetDescription = desc;
+            Player.sheetDescription = new SpriteSheetDescription();
+            Player.sheetDescription.jumpFrameCount = 1;
+            Player.sheetDescription.jumpFrameIndices = new List<int> { 2 };
+            Player.sheetDescription.jumpFrameTimespan = 100000;    // így sose vált
+            Player.sheetDescription.takingDamageFrameCount = 1;
+            Player.sheetDescription.takingDamageFrameIndices = new List<int> { 0 };
+            Player.sheetDescription.takingDamageFrameTimespan = 100000;    // így sose vált
+            Player.sheetDescription.runFrameCount = 3;
+            Player.sheetDescription.runFrameIndices = new List<int> { 6, 5, 4 };
+            Player.sheetDescription.runFrameTimespan = 0.15f;
+            Player.sheetDescription.standingFrameIndex = 6;
+            Player.sheetDescription.frameHeight = 128;
+            Player.sheetDescription.frameWidth = 96;
         }
 
         /// <summary>
@@ -102,6 +104,8 @@ namespace WololoGame
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
+            GraphicsObject.spriteBatch = spriteBatch;
+
             backgroundDark = Content.Load<Texture2D>("images/background_dark");
             backgroundSunny = Content.Load<Texture2D>("images/background_sunny");
 
@@ -113,7 +117,8 @@ namespace WololoGame
             GrassyPlatform.tex_sunny_middle = Content.Load<Texture2D>("images/grass_sunny_middle");
             GrassyPlatform.tex_sunny_rightCorner = Content.Load<Texture2D>("images/grass_sunny_right_corner");
             GrassyPlatform.tex_sunny_soil = Content.Load<Texture2D>("images/grass_sunny_soil");
-            GrassyPlatform.spriteBatch = spriteBatch;
+
+            Player.playerTexture = Content.Load<Texture2D>("images/player");
 
             Logger.Get().Log("main", LogLevel.warning, "LoadingContentFinished!"); 
         }

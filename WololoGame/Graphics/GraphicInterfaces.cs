@@ -32,6 +32,7 @@ namespace WololoGame
         public int standingFrameIndex;
         public int frameHeight;
         public int frameWidth;
+        public int totalFrameCount;
     }
 
 

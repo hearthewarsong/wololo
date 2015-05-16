@@ -90,14 +90,15 @@ namespace WololoGame.Graphics
             spriteBatch.Draw(playerTexture,
                  new Rectangle((int)(Position.X * screenWidth),
                      (int)(Position.Y * screenHeight),
-                     (int)(screenWidth / (24)),
-                     screenHeight / 24),
-                 new Rectangle(0, frameIndex * sheetDescription.frameHeight, (int)(Width * screenWidth), (int)(Height * screenHeight)),
+                    (int)(Width * screenWidth),
+                    (int)(Height * screenHeight)),
+                 new Rectangle(0, frameIndex * sheetDescription.frameHeight, sheetDescription.frameWidth, sheetDescription.frameHeight),
                  Color.White);
         }
 
         private double frameTime;
         private int frameIndex;
+        private static int totalFrameCount;
 
     }
 }
