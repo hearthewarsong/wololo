@@ -21,28 +21,84 @@ namespace WololoGame.Graphics
 
         public override void Update(GameTime gameTime)
         {
+            double elapsedSeconds = gameTime.ElapsedGameTime.TotalSeconds;
+            frameTime += elapsedSeconds;
+            int counter = 0;
+
+            switch (moveState)
+            {
+                case State.Standing:
+                    frameIndex = sheetDescription.standingFrameIndex;
+                    break;
+                case State.Running:
+                    while (frameTime > sheetDescription.runFrameTimespan)
+                    {
+                        frameTime -= sheetDescription.runFrameTimespan;
+                        counter++;
+                    }
+                    for (int i = 0; i < sheetDescription.runFrameCount; i++)
+                    {
+                        if (frameIndex == sheetDescription.runFrameIndices[i])
+                        {
+                            // Itt counter értéke lehet 0 is, ekkor tulképp ugyanaz marad a frameIndex
+                            frameIndex = sheetDescription.runFrameIndices[(i + counter) % sheetDescription.runFrameCount];
+                            break;
+                        }
+                    }
+                    break;
+                case State.Jumping:
+                    while (frameTime > sheetDescription.jumpFrameTimespan)
+                    {
+                        frameTime -= sheetDescription.jumpFrameTimespan;
+                        counter++;
+                    }
+                    for (int i = 0; i < sheetDescription.jumpFrameCount; i++)
+                    {
+                        if (frameIndex == sheetDescription.jumpFrameIndices[i])
+                        {
+                            frameIndex = sheetDescription.jumpFrameIndices[(i + counter) % sheetDescription.jumpFrameCount];
+                            break;
+                        }
+                    }
+                    break;
+                case State.TakingDamage:
+                    while (frameTime > sheetDescription.takingDamageFrameTimespan)
+                    {
+                        frameTime -= sheetDescription.takingDamageFrameTimespan;
+                        counter++;
+                    }
+                    for (int i = 0; i < sheetDescription.takingDamageFrameCount; i++)
+                    {
+                        if (frameIndex == sheetDescription.takingDamageFrameIndices[i])
+                        {
+                            frameIndex = sheetDescription.takingDamageFrameIndices[(i + 1) % sheetDescription.takingDamageFrameCount];
+                            break;
+                        }
+                    }
+                    break;
+            }
+
             base.Update(gameTime);
         }
 
         public override void Draw(GameTime gameTime)
         {
-            switch (moveState)
-            {
-                case State.Standing:
+            var screenWidth = GraphicsDevice.PresentationParameters.BackBufferWidth;
+            var screenHeight = GraphicsDevice.PresentationParameters.BackBufferHeight;
+            // var aspectRatio = (float)screenWidth / screenHeight;
 
-                    break;
-                case State.Running:
-                    break;
-                case State.Jumping:
-
-                    break;
-                case State.TakingDamage:
-                    break;
-            }
+            spriteBatch.Draw(playerTexture,
+                 new Rectangle((int)(Position.X * screenWidth),
+                     (int)(Position.Y * screenHeight),
+                    (int)(Width * screenWidth),
+                    (int)(Height * screenHeight)),
+                 new Rectangle(0, frameIndex * sheetDescription.frameHeight, sheetDescription.frameWidth, sheetDescription.frameHeight),
+                 Color.White);
         }
 
-        private int frameTime;
+        private double frameTime;
         private int frameIndex;
+        private static int totalFrameCount;
 
     }
 }
