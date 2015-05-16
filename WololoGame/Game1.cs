@@ -73,8 +73,8 @@ namespace WololoGame
             lastKeyboardState = new KeyboardState();
             MapLoader maploader = new MapLoader();
 
-            maploader.LoadMap(this, "Content/maps/beginning.txt");
             InitSpriteSheets();
+            maploader.LoadMap(this, "Content/maps/beginning.txt");
 
             base.Initialize();
         }
@@ -89,7 +89,7 @@ namespace WololoGame
             Player.sheetDescription.takingDamageFrameIndices = new List<int> { 0 };
             Player.sheetDescription.takingDamageFrameTimespan = 100000;    // így sose vált
             Player.sheetDescription.runFrameCount = 3;
-            Player.sheetDescription.runFrameIndices = new List<int> { 6, 5, 4 };
+            Player.sheetDescription.runFrameIndices = new List<int> { 6, 5, 4, 5 };
             Player.sheetDescription.runFrameTimespan = 0.15f;
             Player.sheetDescription.standingFrameIndex = 6;
             Player.sheetDescription.frameHeight = 128;
@@ -170,8 +170,17 @@ namespace WololoGame
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             spriteBatch.Begin();
-            spriteBatch.Draw(GlobalConfig.NightMode ? backgroundDark : backgroundSunny,
+            var texture = GlobalConfig.NightMode ? backgroundDark : backgroundSunny;
+            float heightRatio = Math.Min((texture.Width / (float)texture.Height) * (GraphicsDevice.PresentationParameters.BackBufferHeight / (float)GraphicsDevice.PresentationParameters.BackBufferWidth), 1.0f);
+            float widthRatio = Math.Min((texture.Height / (float)texture.Width) * (GraphicsDevice.PresentationParameters.BackBufferWidth / (float)GraphicsDevice.PresentationParameters.BackBufferHeight), 1.0f);
+            spriteBatch.Draw(texture, 
                 new Rectangle(0, 0, GraphicsDevice.PresentationParameters.BackBufferWidth, GraphicsDevice.PresentationParameters.BackBufferHeight),
+                new Rectangle(
+                    0,
+                    0,
+                    (int)(widthRatio * texture.Width),
+                    (int)(heightRatio * texture.Height)
+                    ),
                 Color.White);
             base.Draw(gameTime);
             spriteBatch.End();

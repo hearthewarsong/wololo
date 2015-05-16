@@ -15,7 +15,10 @@ namespace WololoGame.Graphics
 
         public Player(Game game, IPhysicsObject po) : base(game, po)
         {
-            moveState = State.Standing;
+            moveState = State.Running;
+//            moveState = State.Standing;
+//            frameIndex = sheetDescription.standingFrameIndex;
+            frameIndex = sheetDescription.runFrameIndices[0];
         }
 
 
@@ -85,12 +88,12 @@ namespace WololoGame.Graphics
         {
             var screenWidth = GraphicsDevice.PresentationParameters.BackBufferWidth;
             var screenHeight = GraphicsDevice.PresentationParameters.BackBufferHeight;
-            // var aspectRatio = (float)screenWidth / screenHeight;
+            var aspectRatio = (float)screenWidth / screenHeight;
 
             spriteBatch.Draw(playerTexture,
-                 new Rectangle((int)(Position.X * screenWidth),
+                 new Rectangle((int)(Position.X * screenHeight),
                      (int)(Position.Y * screenHeight),
-                    (int)(Width * screenWidth),
+                    (int)(Width * screenHeight),
                     (int)(Height * screenHeight)),
                  new Rectangle(0, frameIndex * sheetDescription.frameHeight, sheetDescription.frameWidth, sheetDescription.frameHeight),
                  Color.White);
@@ -98,7 +101,5 @@ namespace WololoGame.Graphics
 
         private double frameTime;
         private int frameIndex;
-        private static int totalFrameCount;
-
     }
 }
