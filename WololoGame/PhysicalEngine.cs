@@ -68,7 +68,7 @@ namespace WololoGame
     }
     class PhysicalEngine : GameComponent
     {
-        public double Gravity { get; set; } = -2 / 9.0; // 2 / t^2
+        public double Gravity { get; set; } = -2 / 9.0 * 0.0001; // 2 / t^2
         HashSet<PhysicsObject> objects = new HashSet<PhysicsObject>();
         public PhysicalEngine(Game game) : base(game)
         {
@@ -110,18 +110,20 @@ namespace WololoGame
                             {
                                 double X2 = newX < item.X ? item2.X + item2.Width : item2.X;
                                 double Y2 = newY < item.Y ? item2.Y + item2.Height : item2.Y;
-                                if (Between(X2, left, right) && item.Y <= top && item.Y + item.Height >= bottom)
+                                bool yAdded = newY > item.Y;
+                                bool xAdded = newX > item.X;
+                                if (Between(X2, left, right) && item2.Y <= top && item2.Y + item2.Height >= bottom)
                                 {
-                                    newX = X2;
+                                    newX = X2 - (xAdded ? item.Width : 0);
                                     left = Math.Min(item.X, newX);
                                     right = Math.Max(item.X, newX) + item.Width;
                                     item.PVX = 0;
                                     collX = item2;
                                 }
 
-                                if (Between(Y2, top, bottom) && item.X <= right && item.X + item.Width >= left)
+                                if (Between(Y2, top, bottom) && item2.X <= right && item2.X + item2.Width >= left)
                                 {
-                                    newY = Y2;
+                                    newY = Y2 - (yAdded ? item.Height : 0);
                                     bottom = Math.Min(item.Y, newY);
                                     top = Math.Max(item.Y, newY) + item.Height;
                                     item.PVY = 0;
@@ -129,15 +131,6 @@ namespace WololoGame
                                 }
                             }
                         }
-                        if (collY != null)
-                        {
-                            item.CollidedWith(collY);
-                        }
-                        if (collY != null)
-                        {
-                            item.CollidedWith(collX);
-                        }
-                        item.StandingOn = collY;
                     }
                     foreach (var item2 in objects)
                     {
@@ -151,6 +144,17 @@ namespace WololoGame
                             }
                         }
                     }
+                    item.X = newX;
+                    item.Y = newY;
+                    if (collY != null)
+                    {
+                        item.CollidedWith(collY);
+                    }
+                    if (collX != null)
+                    {
+                        item.CollidedWith(collX);
+                    }
+                    item.StandingOn = collY;
                 }
             }
             foreach (var item in objects)
