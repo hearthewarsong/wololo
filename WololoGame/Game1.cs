@@ -41,6 +41,7 @@ namespace WololoGame
             GrassyPlatform platform = new GrassyPlatform(this, physicsObj, v);
             Components.Add(platform);
         }
+        GrassyPlatform playerPlatform;
         public void CreatePlayer(Vector4 rec)
         {
             if (player != null)
@@ -75,7 +76,7 @@ namespace WololoGame
 
             InitSpriteSheets();
             maploader.LoadMap(this, "Content/maps/beginning.txt");
-
+            Components.Add(physics);
             base.Initialize();
         }
 
@@ -142,8 +143,6 @@ namespace WololoGame
             HandleInput();
 
             base.Update(gameTime);
-
-
         }
 
         private void HandleInput()
@@ -155,8 +154,21 @@ namespace WololoGame
 
             if (currentState.IsKeyDown(Keys.Space) && lastKeyboardState.IsKeyUp(Keys.Space))
             {
+                if (!player.physicsObject.CantJump)
+                {
+                    player.physicsObject.PVY = -0.5;
+                }
             }
 
+            if (currentState.IsKeyDown(Keys.Left))
+            {
+                    player.physicsObject.MoveIntentionX = -0.1;
+            }
+
+            if (currentState.IsKeyDown(Keys.Right))
+            {
+                    player.physicsObject.MoveIntentionX = 0.1;
+            }
             lastKeyboardState = currentState;
         }
 

@@ -53,7 +53,8 @@ namespace WololoGame
         {
             Width = (float)po.Width;
             Height = (float)po.Height;
-            Position = new Vector2( (float)po.X, (float)po.Y);
+            Position = new Vector2((float)po.X, (float)po.Y);
+            this.physicsObject = po;
         }
 
         public Vector2 Position { get; set; }

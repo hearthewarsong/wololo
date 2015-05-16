@@ -25,6 +25,8 @@ namespace WololoGame
         double MoveIntentionX { get; set; }
         double MoveIntentionY { get; set; }
 
+        double PVX { get; set; }
+        double PVY { get; set; }
         bool CantJump { get; set; }
     }
     class PhysicsObject : IPhysicsObject
@@ -68,7 +70,7 @@ namespace WololoGame
     }
     class PhysicalEngine : GameComponent
     {
-        public double Gravity { get; set; } = -2 / 9.0; // 2 / t^2
+        public double Gravity { get; set; } = -2 / 4.0; // 2 / t^2
         HashSet<PhysicsObject> objects = new HashSet<PhysicsObject>();
         public PhysicalEngine(Game game) : base(game)
         {
@@ -93,8 +95,8 @@ namespace WololoGame
                     {
                         item.MoveIntentionX += item.StandingOn.VX;
                     }
-                    double newX = item.X + gameTime.ElapsedGameTime.TotalMilliseconds * item.VX;
-                    double newY = item.Y + gameTime.ElapsedGameTime.TotalMilliseconds * item.VY;
+                    double newX = item.X + gameTime.ElapsedGameTime.TotalMilliseconds * item.VX / 1000.0;
+                    double newY = item.Y + gameTime.ElapsedGameTime.TotalMilliseconds * item.VY / 1000.0;
 
                     double left = Math.Min(item.X, newX);
                     double right = Math.Max(item.X, newX) + item.Width;
@@ -110,34 +112,29 @@ namespace WololoGame
                             {
                                 double X2 = newX < item.X ? item2.X + item2.Width : item2.X;
                                 double Y2 = newY < item.Y ? item2.Y + item2.Height : item2.Y;
-                                if (Between(X2, left, right) && item.Y <= top && item.Y + item.Height >= bottom)
+                                bool yAdded = newY > item.Y;
+                                bool xAdded = newX > item.X;
+                                if (Between(Y2, top, bottom) && item2.X <= right && item2.X + item2.Width >= left)
                                 {
-                                    newX = X2;
+                                    newY = Y2 - (yAdded ? item.Height : 0);
+                                    newY = yAdded ? Math.Max(newY, item.Y) : Math.Min(newY, item.Y);
+                                    bottom = Math.Min(item.Y, newY);
+                                    top = Math.Max(item.Y, newY) + item.Height;
+                                    item.PVY = 0;
+                                    collY = item2;
+                                }
+                                if (Between(X2, left, right) && item2.Y < top && item2.Y + item2.Height >= bottom)
+                                {
+                                    newX = X2 - (xAdded ? item.Width : 0);
+                                    newX = xAdded ? Math.Max(newX, item.X) : Math.Min(newX, item.X);
                                     left = Math.Min(item.X, newX);
                                     right = Math.Max(item.X, newX) + item.Width;
                                     item.PVX = 0;
                                     collX = item2;
                                 }
 
-                                if (Between(Y2, top, bottom) && item.X <= right && item.X + item.Width >= left)
-                                {
-                                    newY = Y2;
-                                    bottom = Math.Min(item.Y, newY);
-                                    top = Math.Max(item.Y, newY) + item.Height;
-                                    item.PVY = 0;
-                                    collY = item2;
-                                }
                             }
                         }
-                        if (collY != null)
-                        {
-                            item.CollidedWith(collY);
-                        }
-                        if (collY != null)
-                        {
-                            item.CollidedWith(collX);
-                        }
-                        item.StandingOn = collY;
                     }
                     foreach (var item2 in objects)
                     {
@@ -151,6 +148,17 @@ namespace WololoGame
                             }
                         }
                     }
+                    item.X = newX;
+                    item.Y = newY;
+                    if (collY != null)
+                    {
+                        item.CollidedWith(collY);
+                    }
+                    if (collX != null)
+                    {
+                        item.CollidedWith(collX);
+                    }
+                    item.StandingOn = collY;
                 }
             }
             foreach (var item in objects)

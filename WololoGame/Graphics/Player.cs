@@ -26,6 +26,8 @@ namespace WololoGame.Graphics
         public override void Update(GameTime gameTime)
         {
             double elapsedSeconds = gameTime.ElapsedGameTime.TotalSeconds;
+
+            Position = new Vector2((float)physicsObject.X, (float)physicsObject.Y);
             frameTime += elapsedSeconds;
             int counter = 0;
 
