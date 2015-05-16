@@ -159,9 +159,21 @@ namespace WololoGame
 
             if (currentState.IsKeyDown(Keys.Space) && lastKeyboardState.IsKeyUp(Keys.Space))
             {
-                
+                if (!player.physicsObject.CantJump)
+                {
+                    player.physicsObject.PVY = -0.5;
+                }
             }
 
+            if (currentState.IsKeyDown(Keys.Left))
+            {
+                    player.physicsObject.MoveIntentionX = -0.1;
+            }
+
+            if (currentState.IsKeyDown(Keys.Right))
+            {
+                    player.physicsObject.MoveIntentionX = 0.1;
+            }
             lastKeyboardState = currentState;
         }
 
