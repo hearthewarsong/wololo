@@ -136,6 +136,7 @@
     <Compile Include="Graphics\Player.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="Logic\LogicObjectBase.cs" />
+    <Compile Include="Logic\MovingPlatform.cs" />
     <Compile Include="MapLoader.cs" />
     <Compile Include="Logic\PlayerLogic.cs" />
     <Compile Include="PhysicalEngine.cs" />

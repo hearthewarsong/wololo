@@ -70,7 +70,7 @@ namespace WololoGame
     }
     class PhysicalEngine : GameComponent
     {
-        public double Gravity { get; set; } = -2 / 4.0; // 2 / t^2
+        public double Gravity { get; set; } = -2 / 1.0; // 2 / t^2
         HashSet<PhysicsObject> objects = new HashSet<PhysicsObject>();
         public PhysicalEngine(Game game) : base(game)
         {
@@ -114,7 +114,7 @@ namespace WololoGame
                                 double Y2 = newY < item.Y ? item2.Y + item2.Height : item2.Y;
                                 bool yAdded = newY > item.Y;
                                 bool xAdded = newX > item.X;
-                                if (Between(Y2, top, bottom) && item2.X <= right && item2.X + item2.Width >= left)
+                                if (Between(Y2, top, bottom) && ( item2.X < right && item2.X + item2.Width > left ))
                                 {
                                     newY = Y2 - (yAdded ? item.Height : 0);
                                     newY = yAdded ? Math.Max(newY, item.Y) : Math.Min(newY, item.Y);
@@ -123,7 +123,7 @@ namespace WololoGame
                                     item.PVY = 0;
                                     collY = item2;
                                 }
-                                if (Between(X2, left, right) && item2.Y < top && item2.Y + item2.Height >= bottom)
+                                if (Between(X2, left, right) && item2.Y < top && item2.Y + item2.Height > bottom)
                                 {
                                     newX = X2 - (xAdded ? item.Width : 0);
                                     newX = xAdded ? Math.Max(newX, item.X) : Math.Min(newX, item.X);

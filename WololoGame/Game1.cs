@@ -23,6 +23,7 @@ namespace WololoGame
 
         Player player;
 
+        List<LogicObjectWithUpdate> loUpdates = new List<LogicObjectWithUpdate>();
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -80,6 +81,20 @@ namespace WololoGame
             base.Initialize();
         }
 
+        public void CreateMovingGrassyTerrain(Vector4 rec, Visibility v, float minX, float maxX, float speed)
+        {
+            IPhysicsObject physicsObj = physics.AbbObject(
+                rec.X,
+                rec.Y,
+                rec.Z,
+                rec.W
+                );
+            GrassyPlatform platform = new GrassyPlatform(this, physicsObj, v);
+            MovingPlatform logic = new MovingPlatform(minX, maxX, speed, physicsObj, platform);
+            Components.Add(platform);
+            loUpdates.Add(logic);
+        }
+
         void InitSpriteSheets()
         {
             Player.sheetDescription = new SpriteSheetDescription();
@@ -121,7 +136,7 @@ namespace WololoGame
 
             Player.playerTexture = Content.Load<Texture2D>("images/player");
 
-            Logger.Get().Log("main", LogLevel.warning, "LoadingContentFinished!"); 
+            Logger.Get().Log("main", LogLevel.warning, "LoadingContentFinished!");
         }
 
         /// <summary>
@@ -141,8 +156,11 @@ namespace WololoGame
         protected override void Update(GameTime gameTime)
         {
             HandleInput();
-
             base.Update(gameTime);
+            foreach (var item in loUpdates)
+            {
+                item.Update(gameTime);
+            }
         }
 
         private void HandleInput()
@@ -159,19 +177,19 @@ namespace WololoGame
             {
                 if (!player.physicsObject.CantJump)
                 {
-                    player.physicsObject.PVY = -0.5;
+                    player.physicsObject.PVY = -1.0;
                 }
             }
 
             if (currentState.IsKeyDown(Keys.Left))
             {
-                player.physicsObject.MoveIntentionX = -0.1;
+                player.physicsObject.MoveIntentionX = -0.4;
                 player.facingLeft = true;
             }
 
             if (currentState.IsKeyDown(Keys.Right))
             {
-                player.physicsObject.MoveIntentionX = 0.1;
+                player.physicsObject.MoveIntentionX = 0.4;
                 player.facingLeft = false;
             }
             lastKeyboardState = currentState;
@@ -190,7 +208,7 @@ namespace WololoGame
             var texture = GlobalConfig.NightMode ? backgroundDark : backgroundSunny;
             float heightRatio = Math.Min((texture.Width / (float)texture.Height) * (GraphicsDevice.PresentationParameters.BackBufferHeight / (float)GraphicsDevice.PresentationParameters.BackBufferWidth), 1.0f);
             float widthRatio = Math.Min((texture.Height / (float)texture.Width) * (GraphicsDevice.PresentationParameters.BackBufferWidth / (float)GraphicsDevice.PresentationParameters.BackBufferHeight), 1.0f);
-            spriteBatch.Draw(texture, 
+            spriteBatch.Draw(texture,
                 new Rectangle(0, 0, GraphicsDevice.PresentationParameters.BackBufferWidth, GraphicsDevice.PresentationParameters.BackBufferHeight),
                 new Rectangle(
                     0,
