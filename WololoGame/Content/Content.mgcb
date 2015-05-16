@@ -159,3 +159,21 @@
 /processorParam:TextureFormat=Color
 /build:images/butterfly_sunny.png
 
+#begin post_effects/bloom.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:post_effects/bloom.fx
+
+#begin post_effects/blur.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:post_effects/blur.fx
+
+#begin sounds/bgmusic.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sounds/bgmusic.wav
+

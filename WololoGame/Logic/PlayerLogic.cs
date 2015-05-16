@@ -4,12 +4,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WololoGame.Graphics;
 
 namespace WololoGame.Logic
 {
     public class PlayerLogic : LogicObjectBase, LogicObjectWithUpdate
     {
         protected Vector2 startingPoint;
+        public Player player;
         IPhysicsObject po;
         bool dieOnNextLogic;
         public override void CollidedWith(ILogicObjectForPhysics otherObject)
@@ -19,7 +21,6 @@ namespace WololoGame.Logic
             {
                 if (logicObject.IsDeadly())
                 {
-                    Logger.Get().Log("main", LogLevel.error, "Halál");
                     dieOnNextLogic = true;
                 }
             }
@@ -40,6 +41,7 @@ namespace WololoGame.Logic
             po.PVX = 0;
             po.PVY = 0;
             dieOnNextLogic = false;
+            player.SetMoveState(MoveState.TakingDamage);
         }
 
         public PlayerLogic(IPhysicsObject po)

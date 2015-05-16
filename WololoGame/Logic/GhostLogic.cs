@@ -10,10 +10,6 @@ namespace WololoGame.Logic
     {
         public override void CollidedWith(ILogicObjectForPhysics otherObject)
         {
-            var logicObject = otherObject as LogicObjectBase;
-            if (logicObject != null)
-            {
-            }
         }
 
         public override bool IsDeadly()

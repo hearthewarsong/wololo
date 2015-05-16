@@ -1,5 +1,16 @@
 terrain 0 22 4 2
-terrain 8 20 8 2
+terrain 3 15 8 2
+terrain 8 20 3 5
+terrain 13 10 5 1
+terrain 4 4 4 6
 player 1 10 2 3
-butterfly 11 11 1.7 1.7
-moving_terrain 17 21 9 2 2 16 22 5.0
+butterfly 10 11 1.7 1.7
+butterfly 11 9 1.7 1.4
+butterfly 10 10 1.5 1.7
+butterfly 13 11 1.7 1.9
+butterfly 13 11 1.7 1.6
+butterfly 15 12 1.5 1.7
+butterfly 19 6 1.1 1.7
+butterfly 15 18 1.7 1.6
+butterfly 13 7 2.7 1.8
+moving_terrain 17 21 9 2 0 16 22 5.0

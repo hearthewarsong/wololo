@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -18,8 +19,6 @@ namespace WololoGame.Graphics
 
         bool lastQueryOfIsNightModeProperty;
         int moveCounter;
-        float ax;
-        float ay;
 
         public Butterfly(Game game, IPhysicsObject po) : base(game, po)
         {
