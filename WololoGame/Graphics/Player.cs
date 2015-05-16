@@ -13,6 +13,8 @@ namespace WololoGame.Graphics
         public static Texture2D playerTexture;
         public static SpriteSheetDescription sheetDescription;
 
+        public bool  facingLeft { get; set; }
+
         public Player(Game game, IPhysicsObject po) : base(game, po)
         {
             moveState = State.Running;
@@ -20,7 +22,6 @@ namespace WololoGame.Graphics
 //            frameIndex = sheetDescription.standingFrameIndex;
             frameIndex = sheetDescription.runFrameIndices[0];
         }
-
 
         public override void Update(GameTime gameTime)
         {
@@ -96,7 +97,11 @@ namespace WololoGame.Graphics
                     (int)(Width * screenHeight),
                     (int)(Height * screenHeight)),
                  new Rectangle(0, frameIndex * sheetDescription.frameHeight, sheetDescription.frameWidth, sheetDescription.frameHeight),
-                 Color.White);
+                 Color.White,
+                 0.0f,
+                 new Vector2(),
+                 facingLeft ? SpriteEffects.None : SpriteEffects.FlipHorizontally,
+                 0.0f);
         }
 
         private double frameTime;
