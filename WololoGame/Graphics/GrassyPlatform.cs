@@ -34,21 +34,21 @@ namespace WololoGame.Graphics
 
             var screenWidth = GraphicsDevice.PresentationParameters.BackBufferWidth;
             var screenHeight = GraphicsDevice.PresentationParameters.BackBufferHeight;
-           // var aspectRatio = (float)screenWidth / screenHeight;
+            var aspectRatio = (float)screenWidth / screenHeight;
 
 //            spriteBatch.Begin();
 
             spriteBatch.Draw(GlobalConfig.NightMode ? tex_dark_soil : tex_sunny_soil,
-                new Rectangle((int)(Position.X * screenWidth),
+                new Rectangle((int)(Position.X * screenHeight),
                     (int)(Position.Y * screenHeight) + 20,
-                    (int)(Width * screenWidth),
+                    (int)(Width * screenHeight),
                     (int)(Height * screenHeight)),
                 Color.White);
 
             spriteBatch.Draw(GlobalConfig.NightMode ? tex_dark_leftCorner : tex_sunny_leftCorner,
-                new Rectangle((int)(Position.X * screenWidth),
+                new Rectangle((int)(Position.X * screenHeight),
                     (int)(Position.Y * screenHeight),
-                    (int)(screenWidth / (24)),
+                    (int)(screenHeight / (24)),
                     screenHeight / 24),
                 Color.White);
 
@@ -56,17 +56,17 @@ namespace WololoGame.Graphics
             for (; i < (Width - 0.9f / 24.0f); i += (0.95f / 48.0f))
             {
                 spriteBatch.Draw(GlobalConfig.NightMode ? tex_dark_middle : tex_sunny_middle,
-                    new Rectangle((int)((Position.X + i) * screenWidth),
+                    new Rectangle((int)((Position.X + i) * screenHeight),
                         (int)(Position.Y * screenHeight),
-                        (int)(screenWidth / (48)),
+                        (int)(screenHeight / (48)),
                         screenHeight / 24),
                     Color.White);
             }
 
             spriteBatch.Draw(GlobalConfig.NightMode ? tex_dark_rightCorner : tex_sunny_rightCorner,
-                new Rectangle((int)((Position.X + i) * screenWidth),
+                new Rectangle((int)((Position.X + i) * screenHeight),
                     (int)(Position.Y * screenHeight),
-                    (int)(screenWidth / (24)),
+                    (int)(screenHeight / (24)),
                     screenHeight / 24),
                 Color.White);
 
