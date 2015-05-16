@@ -69,7 +69,7 @@ namespace WololoGame
                 rec.W,
                 false,
                 false,
-                true,
+                false,
                 new GhostLogic()                
                 );
             Components.Add(new Butterfly(this, physicsObj));
@@ -126,29 +126,29 @@ namespace WololoGame
             Player.sheetDescription.frameWidth = 96;
 
             Butterfly.sheetDescription_dark = new SpriteSheetDescription();
-            Butterfly.sheetDescription_dark.jumpFrameCount = 10;
-            Butterfly.sheetDescription_dark.jumpFrameIndices = new List<int> { 0, 1, 2, 3, 4, 5, 4, 3, 2, 1 };
-            Butterfly.sheetDescription_dark.jumpFrameTimespan = 0.055f;    // így sose vált
+            Butterfly.sheetDescription_dark.jumpFrameCount = 9;
+            Butterfly.sheetDescription_dark.jumpFrameIndices = new List<int> { 0, 1, 2, 3, 4, 5, 6, 7, 8 };
+            Butterfly.sheetDescription_dark.jumpFrameTimespan = 0.6f;
             Butterfly.sheetDescription_dark.takingDamageFrameCount = 1;
             Butterfly.sheetDescription_dark.takingDamageFrameIndices = new List<int> { 0 };
             Butterfly.sheetDescription_dark.takingDamageFrameTimespan = 100000;    // így sose vált
             Butterfly.sheetDescription_dark.runFrameCount = 1;
             Butterfly.sheetDescription_dark.runFrameIndices = new List<int> { 0 };
-            Butterfly.sheetDescription_dark.runFrameTimespan = 100000;
+            Butterfly.sheetDescription_dark.runFrameTimespan = 100000;  // így sose vált
             Butterfly.sheetDescription_dark.standingFrameIndex = 0;
-            Butterfly.sheetDescription_dark.frameHeight = 80;
-            Butterfly.sheetDescription_dark.frameWidth = 80;
+            Butterfly.sheetDescription_dark.frameHeight = 97;
+            Butterfly.sheetDescription_dark.frameWidth = 100;
 
             Butterfly.sheetDescription_sunny = new SpriteSheetDescription();
             Butterfly.sheetDescription_sunny.jumpFrameCount = 10;
             Butterfly.sheetDescription_sunny.jumpFrameIndices = new List<int> { 0, 1, 2, 3, 4, 5, 4, 3, 2, 1 };
-            Butterfly.sheetDescription_sunny.jumpFrameTimespan = 0.055f;    // így sose vált
+            Butterfly.sheetDescription_sunny.jumpFrameTimespan = 0.055f;
             Butterfly.sheetDescription_sunny.takingDamageFrameCount = 1;
             Butterfly.sheetDescription_sunny.takingDamageFrameIndices = new List<int> { 0 };
             Butterfly.sheetDescription_sunny.takingDamageFrameTimespan = 100000;    // így sose vált
             Butterfly.sheetDescription_sunny.runFrameCount = 1;
             Butterfly.sheetDescription_sunny.runFrameIndices = new List<int> { 0 };
-            Butterfly.sheetDescription_sunny.runFrameTimespan = 100000;
+            Butterfly.sheetDescription_sunny.runFrameTimespan = 100000; // így sose vált
             Butterfly.sheetDescription_sunny.standingFrameIndex = 0;
             Butterfly.sheetDescription_sunny.frameHeight = 80;
             Butterfly.sheetDescription_sunny.frameWidth = 80;
@@ -212,13 +212,23 @@ namespace WololoGame
         {
             var currentState = Keyboard.GetState();
 
-            if (currentState.IsKeyDown(Keys.H) && lastKeyboardState.IsKeyUp(Keys.H))
+            if (currentState.IsKeyDown(Keys.Space) && lastKeyboardState.IsKeyUp(Keys.Space))
+            {
                 GlobalConfig.NightMode = !GlobalConfig.NightMode;
+                foreach (var c in Components)
+                {
+                    if (c is GraphicsObject)
+                    {
+                        var go = c as GraphicsObject;
+                        go.HandleNightMode(GlobalConfig.NightMode);
+                    }
+                }
+            }
 
             if (currentState.IsKeyDown(Keys.F) && lastKeyboardState.IsKeyUp(Keys.F))
                 graphics.ToggleFullScreen();
 
-            if (currentState.IsKeyDown(Keys.Space) && lastKeyboardState.IsKeyUp(Keys.Space))
+            if (currentState.IsKeyDown(Keys.Up) && lastKeyboardState.IsKeyUp(Keys.Up))
             {
                 if (!player.physicsObject.CantJump)
                 {
@@ -237,6 +247,17 @@ namespace WololoGame
                 player.physicsObject.MoveIntentionX = 0.4;
                 player.facingLeft = false;
             }
+
+            if (player.physicsObject.CantJump)
+                player.SetMoveState(MoveState.Jumping);
+            else
+            {
+                if (currentState.IsKeyUp(Keys.Left) && currentState.IsKeyUp(Keys.Right))
+                    player.SetMoveState(MoveState.Standing);
+                else
+                    player.SetMoveState(MoveState.Running);
+            }
+
             lastKeyboardState = currentState;
         }
 

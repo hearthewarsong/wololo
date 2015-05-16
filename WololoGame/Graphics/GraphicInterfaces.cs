@@ -15,6 +15,15 @@ namespace WololoGame
         Both
     }
 
+    public enum MoveState
+    {
+        Standing,
+        Running,
+        Jumping,
+        TakingDamage
+    }
+
+
     public struct SpriteSheetDescription
     {
         public int runFrameCount;
@@ -57,6 +66,8 @@ namespace WololoGame
             this.physicsObject = po;
         }
 
+        public virtual void HandleNightMode(bool nightMode) { }
+
         public Vector2 Position { get; set; }
         public float Width { get; set; }
         public float Height { get; set; }
@@ -66,14 +77,6 @@ namespace WololoGame
 
     public abstract class AnimatedGraphics : GraphicsObject
     {
-        public enum State
-        {
-            Standing,
-            Running,
-            Jumping,
-            TakingDamage
-        }
-
         public AnimatedGraphics(Game game, float width, float height, Vector2 pos = new Vector2()) :
             base(game, width, height, pos)
         {
@@ -100,10 +103,10 @@ namespace WololoGame
 
             switch (moveState)
             {
-                case State.Standing:
+                case MoveState.Standing:
                     frameIndex = sheetDescription.standingFrameIndex;
                     break;
-                case State.Running:
+                case MoveState.Running:
                     while (frameTime > sheetDescription.runFrameTimespan)
                     {
                         frameTime -= sheetDescription.runFrameTimespan;
@@ -115,7 +118,7 @@ namespace WololoGame
                         frameIndex = sheetDescription.runFrameIndices[runIndicator];
                     }
                     break;
-                case State.Jumping:
+                case MoveState.Jumping:
                     while (frameTime > sheetDescription.jumpFrameTimespan)
                     {
                         frameTime -= sheetDescription.jumpFrameTimespan;
@@ -127,7 +130,7 @@ namespace WololoGame
                         frameIndex = sheetDescription.jumpFrameIndices[jumpIndicator];
                     }
                     break;
-                case State.TakingDamage:
+                case MoveState.TakingDamage:
                     while (frameTime > sheetDescription.takingDamageFrameTimespan)
                     {
                         frameTime -= sheetDescription.takingDamageFrameTimespan;
@@ -147,8 +150,34 @@ namespace WololoGame
         public abstract SpriteSheetDescription GetSheetDescFromDerived();
         public abstract Texture2D GetTextureFromDerived();
 
-        public State moveState { get; set; }
+        public MoveState moveState { get; set; }
         public bool facingLeft { get; set; }
+
+        public void SetMoveState(MoveState s)
+        {
+            if (s == moveState)
+                return;
+            moveState = s;
+            switch(s)
+            {
+                case MoveState.Standing:
+                    frameIndex = GetSheetDescFromDerived().standingFrameIndex;
+                    frameTime = 0.0;
+                    break;
+                case MoveState.Jumping:
+                    frameIndex = GetSheetDescFromDerived().jumpFrameIndices[0];
+                    frameTime = 0.0;
+                    break;
+                case MoveState.Running:
+                    frameIndex = GetSheetDescFromDerived().runFrameIndices[0];
+                    frameTime = 0.0;
+                    break;
+                case MoveState.TakingDamage:
+                    frameIndex = GetSheetDescFromDerived().takingDamageFrameIndices[0];
+                    frameTime = 0.0;
+                    break;
+            }
+        }
 
         protected double frameTime;
         protected int frameIndex;
