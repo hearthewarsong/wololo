@@ -23,7 +23,7 @@ namespace WololoGame.Graphics
 
         public Butterfly(Game game, IPhysicsObject po) : base(game, po)
         {
-            moveState = State.Jumping;
+            moveState = MoveState.Jumping;
             frameIndex = sheetDescription_sunny.jumpFrameIndices[0];
             lastQueryOfIsNightModeProperty = false;
             facingLeft = randomGenerator.Next() % 2 == 0;
@@ -80,6 +80,22 @@ namespace WololoGame.Graphics
         public override Texture2D GetTextureFromDerived()
         {
             return lastQueryOfIsNightModeProperty ? butterflyTexture_dark : butterflyTexture_sunny;
+        }
+
+        public override void HandleNightMode(bool nightMode)
+        {
+            jumpIndicator = 0;
+            frameIndex = nightMode ? sheetDescription_dark.jumpFrameIndices[jumpIndicator] : sheetDescription_sunny.jumpFrameIndices[jumpIndicator];
+            if (nightMode)
+            {
+                physicsObject.Width = Width = Width * 2.0f;
+                physicsObject.Height = Height = Height * 2.0f;
+            }
+            else
+            {
+                physicsObject.Width = Width = Width * 0.5f;
+                physicsObject.Height = Height = Height * 0.5f;
+            }
         }
     }
 }

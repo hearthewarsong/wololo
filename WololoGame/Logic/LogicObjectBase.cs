@@ -11,7 +11,7 @@ namespace WololoGame.Logic
     {
         public abstract void CollidedWith(ILogicObjectForPhysics otherObject);
 
-        public bool IsDeadly()
+        public virtual bool IsDeadly()
         {
             return false;
         }

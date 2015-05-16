@@ -17,5 +17,10 @@ namespace WololoGame.Logic
                     Logger.Get().Log("main", LogLevel.error, "Halál");
             }
         }
+
+        public override bool IsDeadly()
+        {
+            return GlobalConfig.NightMode;
+        }
     }
 }

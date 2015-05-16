@@ -15,10 +15,8 @@ namespace WololoGame.Graphics
 
         public Player(Game game, IPhysicsObject po) : base(game, po)
         {
-            moveState = State.Running;
-//            moveState = State.Standing;
-//            frameIndex = sheetDescription.standingFrameIndex;
-            frameIndex = sheetDescription.runFrameIndices[0];
+            moveState = MoveState.Standing;
+            frameIndex = sheetDescription.standingFrameIndex;
             facingLeft = true;
         }
 

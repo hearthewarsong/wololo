@@ -17,8 +17,10 @@ namespace WololoGame.Logic
             if (logicObject != null)
             {
                 if (logicObject.IsDeadly())
+                {
                     Logger.Get().Log("main", LogLevel.error, "Halál");
                     Die();
+                }
             }
         }
 
