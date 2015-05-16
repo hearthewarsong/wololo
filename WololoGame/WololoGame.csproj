@@ -130,6 +130,7 @@
     </Compile>
     <Compile Include="Game1.cs" />
     <Compile Include="GloabalConfig.cs" />
+    <Compile Include="Graphics\Butterfly.cs" />
     <Compile Include="Graphics\GraphicInterfaces.cs" />
     <Compile Include="Graphics\GrassyPlatform.cs" />
     <Compile Include="Graphics\Player.cs" />

@@ -152,6 +152,9 @@ namespace WololoGame
             if (currentState.IsKeyDown(Keys.H) && lastKeyboardState.IsKeyUp(Keys.H))
                 GlobalConfig.NightMode = !GlobalConfig.NightMode;
 
+            if (currentState.IsKeyDown(Keys.LeftAlt) && currentState.IsKeyDown(Keys.Enter) && lastKeyboardState.IsKeyUp(Keys.Enter))
+                graphics.ToggleFullScreen();
+
             if (currentState.IsKeyDown(Keys.Space) && lastKeyboardState.IsKeyUp(Keys.Space))
             {
                 if (!player.physicsObject.CantJump)
@@ -162,12 +165,14 @@ namespace WololoGame
 
             if (currentState.IsKeyDown(Keys.Left))
             {
-                    player.physicsObject.MoveIntentionX = -0.1;
+                player.physicsObject.MoveIntentionX = -0.1;
+                player.facingLeft = true;
             }
 
             if (currentState.IsKeyDown(Keys.Right))
             {
-                    player.physicsObject.MoveIntentionX = 0.1;
+                player.physicsObject.MoveIntentionX = 0.1;
+                player.facingLeft = false;
             }
             lastKeyboardState = currentState;
         }

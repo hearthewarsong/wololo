@@ -83,6 +83,10 @@ namespace WololoGame
         }
 
         public State moveState { get; set; }
+        public bool facingLeft { get; set; }
+
+        protected double frameTime;
+        protected int frameIndex;
     }
 
     interface IGraphicsFactory

@@ -13,8 +13,6 @@ namespace WololoGame.Graphics
         public static Texture2D playerTexture;
         public static SpriteSheetDescription sheetDescription;
 
-        public bool  facingLeft { get; set; }
-
         public Player(Game game, IPhysicsObject po) : base(game, po)
         {
             moveState = State.Running;
@@ -105,8 +103,5 @@ namespace WololoGame.Graphics
                  facingLeft ? SpriteEffects.None : SpriteEffects.FlipHorizontally,
                  0.0f);
         }
-
-        private double frameTime;
-        private int frameIndex;
     }
 }
