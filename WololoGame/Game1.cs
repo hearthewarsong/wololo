@@ -214,10 +214,10 @@ namespace WololoGame
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
             GraphicsObject.spriteBatch = spriteBatch;
-//            bgMusic = Content.Load<SoundEffect>("sounds/bgmusic");
-//            bgMusicInstance = bgMusic.CreateInstance();
-//            bgMusicInstance.IsLooped = true;
-//            bgMusicInstance.Play();
+            bgMusic = Content.Load<SoundEffect>("sounds/bgmusic");
+            bgMusicInstance = bgMusic.CreateInstance();
+            bgMusicInstance.IsLooped = true;
+            bgMusicInstance.Play();
 
             backgroundDark = Content.Load<Texture2D>("images/background_dark");
             backgroundSunny = Content.Load<Texture2D>("images/background_sunny");
@@ -405,12 +405,12 @@ namespace WololoGame
         /// Stops the sound effects.
         /// </summary>
         /// <param name="disposing">true to release both managed and unmanaged resources; false to release only unmanaged resources.</param>
-  /*      protected override void Dispose(bool disposing)
+        protected override void Dispose(bool disposing)
         {
             if (null != bgMusicInstance && false == bgMusicInstance.IsDisposed)
                 bgMusicInstance.Stop();
 
             base.Dispose(disposing);
-        }*/
+        }
     }
 }
